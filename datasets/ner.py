@@ -5,35 +5,33 @@ from torch.utils.data import Dataset
 from transformers.data.data_collator import DataCollatorMixin
 
 PADDING_IDX = 4832
-
-def collate_fn(features: list[dict[str, torch.Tensor]]) -> dict[str, torch.Tensor]:
-    input_ids = [f["input_ids"] for f in features]
-    labels = [f["labels"] for f in features]
-
-    batch_size = len(input_ids)
-    max_seq_len = max(len(ids) for ids in input_ids)
-
-    # 创建填充后的张量
-    word_ids = torch.full((batch_size, max_seq_len), PADDING_IDX, dtype=torch.long)
-    tag_ids = torch.full((batch_size, max_seq_len), 7, dtype=torch.long)
-    attention_mask = torch.zeros((batch_size, max_seq_len), dtype=torch.bool)
-
-    # 填充每个序列
-    for i, (word, tag) in enumerate(zip(input_ids, labels)):
-        word_ids[i, :len(word)] = word
-        tag_ids[i, :len(tag)] = tag
-        attention_mask[i, :len(word)] = True
-
-    return {
-        "input_ids": word_ids,
-        "attention_mask": attention_mask,
-        "labels": tag_ids
-    }
+OUTSIDE_TAG = 0
     
 class NERDataCollator(DataCollatorMixin):
-    """封装了自定义的 collate_fn，用于 Hugging Face 的 Trainer。"""
+    """封装了自定义的 collate_fn, 用于 Hugging Face 的 Trainer。"""
     def __call__(self, features: list[dict[str, torch.Tensor]]) -> dict[str, torch.Tensor]:
-        return collate_fn(features)
+        input_ids = [f["input_ids"] for f in features]
+        labels = [f["labels"] for f in features]
+
+        batch_size = len(input_ids)
+        max_seq_len = max(len(ids) for ids in input_ids)
+
+        # 创建填充后的张量
+        word_ids = torch.full((batch_size, max_seq_len), PADDING_IDX, dtype=torch.long)
+        tag_ids = torch.full((batch_size, max_seq_len), OUTSIDE_TAG, dtype=torch.long)
+        attention_mask = torch.zeros((batch_size, max_seq_len), dtype=torch.bool)
+
+        # 填充每个序列
+        for i, (word, tag) in enumerate(zip(input_ids, labels)):
+            word_ids[i, :len(word)] = word
+            tag_ids[i, :len(tag)] = tag
+            attention_mask[i, :len(word)] = True
+
+        return {
+            "input_ids": word_ids,
+            "attention_mask": attention_mask,
+            "labels": tag_ids
+        }
 
 class NERDataset(Dataset):
     def __init__(self, path: str, part: str):

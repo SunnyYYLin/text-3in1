@@ -1,14 +1,14 @@
 import argparse
 from inspect import signature
 from typing import Type
-from .cnn_config import TextCNNConfig
-from .rnn_config import TextRNNConfig
+from .config import *
 
 class ConfigParser(argparse.ArgumentParser):
     def __init__(self):
         super().__init__()
         
         # base args
+        self.add_argument('--mode', default='train', choices=['train', 'test'])
         self.add_argument('--task', default='sentiment', choices=['sentiment', 'ner'])
         self.add_argument('--model', default='cnn', choices=['cnn', 'rnn', 'transformer'])
         self.add_argument('--data_path', default='data/sentiment')
@@ -20,9 +20,14 @@ class ConfigParser(argparse.ArgumentParser):
         self.add_argument('--acc_interval', default=100, type=int)
         self.add_argument('--lr', default=1e-3, type=float)
         self.add_argument('--dropout', default=0.5, type=float)
-        self.add_argument('--embedding_dim', default=256, type=int)
         self.add_argument('--verbose', default=False, type=bool)
         self.add_argument('--fp16', action='store_true')
+        
+        
+        # TextModel
+        self.add_argument('--embedding_dim', default=256, type=int)
+        
+        # Sentiment
         self.add_argument('--num_classes', default=2, type=int)
 
         # CNN
@@ -33,16 +38,25 @@ class ConfigParser(argparse.ArgumentParser):
         self.add_argument('--hidden_size', type=int, default=256, help='Hidden size for RNN')
         self.add_argument('--num_layers', type=int, default=2, help='Number of layers for RNN')
         self.add_argument('--bidirectional', action='store_true', help='Use bidirectional RNN')
-        self.add_argument('--rnn_type', type=str, default='LSTM', choices=['LSTM', 'GRU'], help='Type of RNN: LSTM or GRU')
+        self.add_argument('--rnn_type', type=str, default='LSTM', choices=['LSTM', 'GRU', 'lstm', 'gru'], help='Type of RNN: LSTM or GRU')
     
     def parse_config(self):
-        model = self.parse_args().model
-        if model == 'cnn':
-            return TextCNNConfig(**self.filter_kwargs(TextCNNConfig))
-        elif model == 'rnn':
-            return TextRNNConfig(**self.filter_kwargs(TextRNNConfig))
-        else:
-            raise NotImplementedError(f'{model} is not implemented')
+        args = self.parse_args()
+        match (args.task, args.model):
+            case ('sentiment', 'cnn'):
+                cfg_cls = SentiCNNConfig
+            case ('sentiment', 'rnn'):
+                cfg_cls = SentiRNNConfig
+            case ('sentiment', 'transformer'):
+                cfg_cls = SentiTransformerConfig
+            case ('ner', 'rnn'):
+                cfg_cls = NER_RNNConfig
+            case ('ner', 'transformer'):
+                cfg_cls = NERTransformerConfig
+            case _:
+                raise NotImplementedError(f"Unsupported task: {args.task}, model: {args.model}")
+                
+        return cfg_cls(**self.filter_kwargs(cfg_cls))
     
     def filter_kwargs(self, cls: Type) -> dict[str, ]:
         args = self.parse_args()

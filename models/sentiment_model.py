@@ -1,0 +1,41 @@
+import torch
+import torch.nn as nn
+from configs import SentimentConfig
+from .backbone import get_backbone
+
+class SentimentModel(nn.Module):
+    def __init__(self, config: SentimentConfig) -> None:
+        super(SentimentModel, self).__init__()
+        model_cls = get_backbone(config.model)
+        self.embedding = nn.Embedding(
+            num_embeddings=config.vocab_size + 1,
+            embedding_dim=config.emb_dim,
+            padding_idx=-1
+        )
+        self.backbone = model_cls(config)
+        self.dropout = nn.Dropout(config.dropout)
+        self.classifier = nn.LazyLinear(config.num_classes)
+        self.loss = nn.CrossEntropyLoss()
+        self._init_lazy()
+        
+    def _init_lazy(self):
+        dummy_input = torch.zeros((1, 32), dtype=torch.long)
+        self.forward(dummy_input)
+    
+    def forward(self, input_ids: torch.LongTensor, 
+                attention_mask: torch.LongTensor|None=None,
+                labels: torch.LongTensor|None=None) -> dict[str, torch.Tensor]:
+        emb = self.embedding(input_ids)
+        features = self.backbone(emb, attention_mask)
+        features = self.dropout(features)
+        logits = self.classifier(features)
+        if labels is not None:
+            loss = self.loss(logits, labels)
+            return {'logits': logits, 'loss': loss}
+        return {'logits': logits}
+    
+    def predict(self, **kwargs) -> torch.LongTensor:
+        with torch.no_grad():
+            logits = self.forward(**kwargs)['logits']
+            tag = torch.argmax(logits, dim=-1)
+            return tag

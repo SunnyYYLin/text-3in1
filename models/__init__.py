@@ -1,21 +1,24 @@
-from configs import TextCNNConfig, TextRNNConfig
-from .text_base_model import TextBaseModel
-from .sentiment_cnn import SentimentCNN
-from .sentiment_rnn import SentimentRNN
-from .rnn_crf import RNN_CRF
+import os
+from safetensors.torch import load_file
+from .sentiment_model import SentimentModel
+from .ner_crf import NER_CRF
 
 def get_model(config):
-    if config.task == 'sentiment':
-        if isinstance(config, TextCNNConfig):
-            return SentimentCNN(config)
-        elif isinstance(config, TextRNNConfig):
-            return SentimentRNN(config)
-        else:
-            raise ValueError(f'Unsupported model type: {config.model_type}')
-    elif config.task == 'ner':
-        if isinstance(config, TextRNNConfig):
-            return RNN_CRF(config)
-        else:
-            raise ValueError(f'Unsupported model type: {config.model_type}')
-    else:
-        raise ValueError(f'Unsupported model type: {config.__class__.__name__}')
+    match config.task:
+        case 'sentiment':
+            model = SentimentModel(config)
+        case 'ner':
+            model = NER_CRF(config)
+        case _:
+            raise NotImplementedError(f"Unsupported task: {config.task}")
+    
+    if config.mode == 'test':
+        checkpoint_list = os.listdir(config.save_dir)
+        assert len(checkpoint_list) > 0, 'No checkpoint found'
+        best_step = sorted(checkpoint_list, key=lambda x: int(x.split('-')[-1]))[-1]
+        checkpoint_path = os.path.join(config.save_dir, best_step, 'model.safetensors')
+        model.load_state_dict(load_file(checkpoint_path))
+    
+    print(model)
+    
+    return model

@@ -1,7 +1,7 @@
 from configs import ConfigParser
 from models import get_model
 from datasets import get_datasets, get_collators
-from utils.metrics import get_metrics
+from metrics import get_metrics
 from transformers.trainer import Trainer
 
 if __name__ == '__main__':
@@ -21,16 +21,18 @@ if __name__ == '__main__':
     model = get_model(config)
     ## trainer
     train_args = config.train_args()
-    compute_metrics = get_metrics(config)
+    metrics = get_metrics(config)
     trainer = Trainer(model=model, 
                       args=train_args, 
                       train_dataset=train_dataset, 
                       eval_dataset=val_dataset, 
                       data_collator=collator,
-                      compute_metrics=compute_metrics)
+                      compute_metrics=metrics)
     
-    # training
-    trainer.train()
+    if config.mode == 'train':
+        # training
+        trainer.train()
     
     # testing
-    trainer.evaluate(test_dataset)
+    results = trainer.evaluate(test_dataset)
+    print(results)

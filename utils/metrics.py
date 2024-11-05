@@ -16,8 +16,8 @@ def get_metrics(config: BaseConfig):
             num_classes=config.num_classes).to(config.device)
         
         def compute_metrics(pred):
-            labels = torch.tensor(pred.label_ids).to(config.device)
-            preds = torch.tensor(pred.predictions).argmax(dim=-1).to(config.device)
+            labels = torch.tensor(pred.label_ids, device=config.device)
+            preds = torch.tensor(pred.predictions, device=config.device).argmax(dim=-1)
 
             accuracy = accuracy_metric(preds, labels)
             f1 = f1_metric(preds, labels)
