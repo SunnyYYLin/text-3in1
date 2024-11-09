@@ -14,13 +14,11 @@ def collate_fn(batch: list[dict[str, ]]) -> dict[str, torch.Tensor]:
     batch_size = len(texts)
     max_length = max(len(text) for text in texts)
 
-    # 创建填充后的 input_ids 张量
     input_ids = torch.full((batch_size, max_length), PADDING_IDX, dtype=torch.long)
+    attention_mask = torch.zeros((batch_size, max_length), dtype=torch.bool)
     for i, text in enumerate(texts):
         input_ids[i, :len(text)] = torch.tensor(text, dtype=torch.long)
-
-    # 生成 attention mask
-    attention_mask = (input_ids != PADDING_IDX).long()
+        attention_mask[i, :len(text)] = True
 
     # 转换标签为张量
     labels = torch.tensor(labels, dtype=torch.long)
@@ -76,3 +74,4 @@ class SentimentDataset(Dataset):
     
     def __getitem__(self, index):
         return self.data[index]
+    

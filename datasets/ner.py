@@ -39,9 +39,9 @@ class NERDataset(Dataset):
         data_path = os.path.join(path, f'{part}.txt')
         chr_vocab_path = os.path.join(path, 'chr_vocab.json')
         tag_vocab_path = os.path.join(path, 'tag_vocab.json')
-        self.data = self.load_data(data_path)
         self.chr_vocab = json.load(open(chr_vocab_path, 'r', encoding='utf-8'))
         self.tag_vocab = json.load(open(tag_vocab_path, 'r', encoding='utf-8'))
+        self.data = self.load_data(data_path)
         print(f"Loaded {len(self.data)} samples from {data_path}.")
         
     def load_data(self, data_path: str):

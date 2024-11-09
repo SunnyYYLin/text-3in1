@@ -3,6 +3,7 @@ from models import get_model
 from datasets import get_datasets, get_collators
 from metrics import get_metrics
 from transformers.trainer import Trainer
+from transformers.trainer_callback import EarlyStoppingCallback
 
 if __name__ == '__main__':
     # reading config
@@ -22,12 +23,19 @@ if __name__ == '__main__':
     ## trainer
     train_args = config.train_args()
     metrics = get_metrics(config)
+    early_stopping = EarlyStoppingCallback(
+        early_stopping_patience=6,     # 等待 6 个 evaluation 无改进则停止
+        early_stopping_threshold=0.001 # 指标变化阈值
+    )
     trainer = Trainer(model=model, 
                       args=train_args, 
                       train_dataset=train_dataset, 
                       eval_dataset=val_dataset, 
                       data_collator=collator,
-                      compute_metrics=metrics)
+                      compute_metrics=metrics,
+                      callbacks=[early_stopping]
+                      )
+    trainer.label_names = config.label_names
     
     if config.mode == 'train':
         # training

@@ -1,39 +1,43 @@
 import os
-import json
 from dataclasses import dataclass, field
+from typing import TypeAlias
 
 @dataclass
 class TextModelConfig:
     emb_dim: int = 256
-    vocab_size: int = -1
+    dropout: float = 0.5
 
 @dataclass
 class CNNConfig(TextModelConfig):
-    filter_sizes: list = field(default_factory=lambda: [4, 5, 6])
-    num_filters: int = 1
-    output_size: int = 2
+    filter_sizes: str = "[3,4,5]"
+    num_filters: str = "[2,2,2]"
+    dropout: float = 0.5
     
-    def __post_init__(self):
-        super().__post_init__()
-        self.log_dir = os.path.join(self.log_dir, self.abbr())
-        self.save_dir = os.path.join(self.save_dir, self.abbr())
-        if not os.path.exists(self.log_dir):
-            os.makedirs(self.log_dir)
-        if not os.path.exists(self.save_dir):
-            os.makedirs(self.save_dir)
+    def __post_init__(self):  
+        try:
+            self.filter_sizes: list[int] = eval(self.filter_sizes)
+        except:
+            raise ValueError("Invalid filter_sizes format. Please use the format: [size1, size2, ...]")
+        
+        try:
+            self.num_filters: list[int] = eval(self.num_filters)
+        except:
+            raise ValueError("Invalid num_filters format. Please use the format: [num1, num2, ...]")
+        
+        assert len(self.filter_sizes) == len(self.num_filters), \
+            "The number of filter sizes should be equal to the number of num_filters."
     
     def abbr(self) -> str:
-        filter_config = '-'.join([str(size) for size in self.filter_sizes])
-        cnn_config = f"CNN_filters{filter_config}_repeat{self.num_filters}_emb{self.emb_dim}"
+        cnn_config = f"CNN_filters{self.filter_sizes}_num{self.num_filters}_emb{self.emb_dim}_dropout{self.dropout}"
         return cnn_config
     
     @staticmethod
     def from_abbr(abbr: str):
         config_list = abbr.split('_')
-        filter_config = config_list[0].replace('CNN_filters', '')
-        filter_sizes = [int(size) for size in filter_config.split('-')]
-        num_filters = int(config_list[1].replace('repeat', ''))
-        emb_dim = int(config_list[2].replace('emb', ''))
+        filter_sizes = eval(config_list[1].removeprefix('filters'))
+        num_filters = eval(config_list[2].removeprefix('num'))
+        emb_dim = int(config_list[3].removeprefix('emb'))
+        dropout = float(config_list[4].removeprefix('dropout'))
         config = CNNConfig(filter_sizes=filter_sizes, num_filters=num_filters, emb_dim=emb_dim)
         return config
         
@@ -42,22 +46,17 @@ class RNNConfig(TextModelConfig):
     hidden_size: int = 128
     num_layers: int = 2
     bidirectional: bool = False
-    rnn_type: str = 'LSTM'  # RNN 类型，可以是 'LSTM' 或 'GRU'
-    only_last: bool = True  # 是否只使用最后一个时间步的输出
+    rnn_type: str = 'lstm'  # RNN 类型，可以是 'LSTM' 或 'GRU'
+    only_one: bool = True  # 是否只使用一个输出
+    dropout: float = 0.2
     
     def __post_init__(self):
-        super().__post_init__()
-        self.log_dir = os.path.join(self.log_dir, self.abbr())
-        self.save_dir = os.path.join(self.save_dir, self.abbr())
-        if not os.path.exists(self.log_dir):
-            os.makedirs(self.log_dir)
-        if not os.path.exists(self.save_dir):
-            os.makedirs(self.save_dir)
+        self.rnn_type = self.rnn_type.lower()
     
     def abbr(self) -> str:
         """Return an abbreviation string of the config for saving files."""
         rnn_config = \
-            f"{self.rnn_type.upper()}_layers{self.num_layers}_hidden{self.hidden_size}_emb{self.emb_dim}"
+            f"{self.rnn_type.upper()}_layers{self.num_layers}_hidden{self.hidden_size}_emb{self.emb_dim}_dropout{self.dropout}"
         if self.bidirectional:
             rnn_config += "_bi"
         return rnn_config
@@ -67,9 +66,10 @@ class RNNConfig(TextModelConfig):
         """Return a TextRNNConfig object from an abbreviation string."""
         config_list = abbr.split('_')
         rnn_type = config_list[0]
-        num_layers = int(config_list[1].replace('layers', ''))
-        hidden_size = int(config_list[2].replace('hidden', ''))
-        emb_dim = int(config_list[3].replace('emb', ''))
+        num_layers = int(config_list[1].removeprefix('layers'))
+        hidden_size = int(config_list[2].removeprefix('hidden'))
+        emb_dim = int(config_list[3].removeprefix('emb'))
+        dropout = float(config_list[4].removeprefix('dropout'))
         bidirectional = True if 'bi' in config_list else False
         config = RNNConfig(rnn_type=rnn_type, num_layers=num_layers,
                                hidden_size=hidden_size, emb_dim=emb_dim,
@@ -78,28 +78,37 @@ class RNNConfig(TextModelConfig):
     
 @dataclass
 class TransformerConfig(TextModelConfig):
-    num_layers: int = 6
-    d_model: int = 512
+    ffn_size: int = 128
     num_heads: int = 8
-    dff: int = 2048
+    num_layers: int = 2
+    only_one: bool = True  # 是否只使用一个输出
+    dropout: float = 0.1
+    
+    def __post_init__(self):
+        assert self.emb_dim % self.num_heads == 0, \
+            "embedding dim should be divisible by num_heads."
 
     def abbr(self) -> str:
-        transformer_config = (
-            f"layers{self.num_layers}_dmodel{self.d_model}_"
-            f"heads{self.num_heads}_dff{self.dff}_drop{self.dropout_rate}"
-        )
+        """Return an abbreviation string of the config for saving files."""
+        transformer_config = f"Transformer_layers{self.num_layers}_ffnsize{self.ffn_size}_heads{self.num_heads}_emb{self.emb_dim}_dropout{self.dropout}"
         return transformer_config
-
+    
     @staticmethod
     def from_abbr(abbr: str):
-        parts = abbr.split('_')
-        num_layers = int(parts[0].replace('layers', ''))
-        d_model = int(parts[1].replace('dmodel', ''))
-        num_heads = int(parts[2].replace('heads', ''))
-        dff = int(parts[3].replace('dff', ''))
-        return TransformerConfig(
-            num_layers=num_layers,
-            d_model=d_model,
-            num_heads=num_heads,
-            dff=dff
-        )
+        """Return a TextTransformerConfig object from an abbreviation string."""
+        config_list = abbr.split('_')
+        num_layers = int(config_list[0].removeprefix('layers'))
+        hidden_size = int(config_list[1].removeprefix('ffnsize'))
+        num_heads = int(config_list[2].removeprefix('heads'))
+        emb_dim = int(config_list[3].removeprefix('emb'))
+        dropout = float(config_list[4].removeprefix('dropout'))
+        config = TransformerConfig(num_layers=num_layers, hidden_size=hidden_size,
+                                       num_heads=num_heads, emb_dim=emb_dim)
+        return config
+
+ModelConfig: TypeAlias = CNNConfig|RNNConfig|TransformerConfig
+MODEL_CONFIG_CLASSES = {
+    'cnn': CNNConfig,
+    'rnn': RNNConfig,
+    'transformer': TransformerConfig
+}

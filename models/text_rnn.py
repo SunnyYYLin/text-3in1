@@ -6,7 +6,7 @@ from configs.model_config import RNNConfig
 class TextRNN(nn.Module):
     def __init__(self, config: RNNConfig) -> None:
         super(TextRNN, self).__init__()
-        self.only_last = config.only_last
+        self.only_last = config.only_one
         match config.rnn_type.lower():
             case 'lstm':
                 rnn_cls = nn.LSTM
@@ -22,6 +22,7 @@ class TextRNN(nn.Module):
             bidirectional=config.bidirectional,
             batch_first=True
         )
+        self.dropout = nn.Dropout(config.dropout)
         
     def forward(self, emb: torch.Tensor, 
                 attention_mask: torch.LongTensor|None=None) -> torch.Tensor:
@@ -62,4 +63,5 @@ class TextRNN(nn.Module):
             else:
                 features = output
         
+        features = self.dropout(features)
         return features
