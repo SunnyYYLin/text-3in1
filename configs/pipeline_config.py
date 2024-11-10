@@ -44,6 +44,9 @@ class PipelineConfig:
         config_dict.pop('data_dir')
         config_dict.pop('save_dir')
         config_dict.pop('log_dir')
+        config_dict['data_path'] = self.data_path
+        config_dict['log_path'] = self.log_path
+        config_dict['save_path'] = self.save_path
         return 'PipelineConfig('+', '.join([f"{k}={v}" for k, v in config_dict.items()])+')'
     
     def train_args(self) -> TrainingArguments:
