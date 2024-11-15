@@ -1,0 +1,480 @@
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=128, dropout=0.2, hidden_size=256, num_layers=1, bidirectional=False, rnn_type=lstm, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/LSTM_layers1_hidden256_emb128_dropout0.2, save_path=checkpoints/ner/LSTM_layers1_hidden256_emb128_dropout0.2)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=128, dropout=0.2, hidden_size=256, num_layers=1, bidirectional=False, rnn_type=gru, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/GRU_layers1_hidden256_emb128_dropout0.2, save_path=checkpoints/ner/GRU_layers1_hidden256_emb128_dropout0.2)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=128, dropout=0.2, hidden_size=256, num_layers=1, bidirectional=True, rnn_type=lstm, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/LSTM_layers1_hidden256_emb128_dropout0.2_bi, save_path=checkpoints/ner/LSTM_layers1_hidden256_emb128_dropout0.2_bi)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=128, dropout=0.2, hidden_size=256, num_layers=1, bidirectional=True, rnn_type=gru, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/GRU_layers1_hidden256_emb128_dropout0.2_bi, save_path=checkpoints/ner/GRU_layers1_hidden256_emb128_dropout0.2_bi)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=256, dropout=0.2, hidden_size=512, num_layers=2, bidirectional=False, rnn_type=lstm, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/LSTM_layers2_hidden512_emb256_dropout0.2, save_path=checkpoints/ner/LSTM_layers2_hidden512_emb256_dropout0.2)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=256, dropout=0.2, hidden_size=512, num_layers=2, bidirectional=False, rnn_type=gru, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/GRU_layers2_hidden512_emb256_dropout0.2, save_path=checkpoints/ner/GRU_layers2_hidden512_emb256_dropout0.2)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=256, dropout=0.2, hidden_size=512, num_layers=2, bidirectional=True, rnn_type=lstm, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/LSTM_layers2_hidden512_emb256_dropout0.2_bi, save_path=checkpoints/ner/LSTM_layers2_hidden512_emb256_dropout0.2_bi)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=256, dropout=0.2, hidden_size=512, num_layers=2, bidirectional=True, rnn_type=gru, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/GRU_layers2_hidden512_emb256_dropout0.2_bi, save_path=checkpoints/ner/GRU_layers2_hidden512_emb256_dropout0.2_bi)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=256, dropout=0.3, hidden_size=768, num_layers=3, bidirectional=False, rnn_type=lstm, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/LSTM_layers3_hidden768_emb256_dropout0.3, save_path=checkpoints/ner/LSTM_layers3_hidden768_emb256_dropout0.3)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=256, dropout=0.3, hidden_size=768, num_layers=3, bidirectional=False, rnn_type=gru, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/GRU_layers3_hidden768_emb256_dropout0.3, save_path=checkpoints/ner/GRU_layers3_hidden768_emb256_dropout0.3)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=256, dropout=0.3, hidden_size=768, num_layers=3, bidirectional=True, rnn_type=lstm, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/LSTM_layers3_hidden768_emb256_dropout0.3_bi, save_path=checkpoints/ner/LSTM_layers3_hidden768_emb256_dropout0.3_bi)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=256, dropout=0.3, hidden_size=768, num_layers=3, bidirectional=True, rnn_type=gru, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/GRU_layers3_hidden768_emb256_dropout0.3_bi, save_path=checkpoints/ner/GRU_layers3_hidden768_emb256_dropout0.3_bi)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=384, dropout=0.3, hidden_size=768, num_layers=3, bidirectional=False, rnn_type=lstm, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/LSTM_layers3_hidden768_emb384_dropout0.3, save_path=checkpoints/ner/LSTM_layers3_hidden768_emb384_dropout0.3)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=384, dropout=0.3, hidden_size=768, num_layers=3, bidirectional=False, rnn_type=gru, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/GRU_layers3_hidden768_emb384_dropout0.3, save_path=checkpoints/ner/GRU_layers3_hidden768_emb384_dropout0.3)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=384, dropout=0.3, hidden_size=768, num_layers=3, bidirectional=True, rnn_type=lstm, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/LSTM_layers3_hidden768_emb384_dropout0.3_bi, save_path=checkpoints/ner/LSTM_layers3_hidden768_emb384_dropout0.3_bi)
+
+ErrorCaught RuntimeError in replica 1 on device 1.
+Original Traceback (most recent call last):
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/parallel/parallel_apply.py", line 96, in _worker
+    output = module(*input, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/ner_crf.py", line 32, in forward
+    loss = self.crf(logits, attention_mask, labels)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/HOME/scz0rrs/.conda/envs/text3in1/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 253, in forward
+    gold_score = self._score_sentence(scores, mask, tags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/run01/scz0rrs/text-3in1/models/crf.py", line 238, in _score_sentence
+    tg_energy = tg_energy.masked_select(mask.transpose(1,0))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (99) must match the size of tensor b (98) at non-singleton dimension 0
+
+PipelineConfig(mode=train, task=ner, model=rnn, num_epoch=32, batch_size=128, loss_interval=10, acc_interval=100, lr=0.001, fp16=True, device=cuda, verbose=True, emb_dim=384, dropout=0.3, hidden_size=768, num_layers=3, bidirectional=True, rnn_type=gru, only_one=False, num_tags=7, vocab_size=4832, label_names=['labels'], data_path=data/ner, log_path=logs/ner/GRU_layers3_hidden768_emb384_dropout0.3_bi, save_path=checkpoints/ner/GRU_layers3_hidden768_emb384_dropout0.3_bi)
+

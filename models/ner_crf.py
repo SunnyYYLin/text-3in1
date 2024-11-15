@@ -14,7 +14,7 @@ class NER_CRF(nn.Module):
             padding_idx=-1
         )
         self.backbone = model_cls(config)
-        self.classifier = nn.LazyLinear(config.num_tags + 2)
+        self.classifier = nn.LazyLinear(config.num_tags + 2) # add START and END state
         self.crf = CRF(config.num_tags, config.device != 'cpu')
         self._init_lazy()
         

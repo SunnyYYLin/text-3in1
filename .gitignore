@@ -163,7 +163,10 @@ cython_debug/
 
 *.rar
 logs/
+slurm_logs/
 data/
 checkpoints/
 *.pth
 .vscode/
+failed_configs.txt
+temp.txt

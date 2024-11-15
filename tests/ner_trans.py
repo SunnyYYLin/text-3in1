@@ -36,8 +36,8 @@ def test_ner_transformer():
         TransformerConfig(emb_dim=256, ffn_size=1024, num_heads=4, num_layers=4, dropout=0.1),
         
         # 高效配置，适合更复杂的序列依赖
-        TransformerConfig(emb_dim=256, ffn_size=1024, num_heads=6, num_layers=4, dropout=0.2),
-        TransformerConfig(emb_dim=256, ffn_size=1024, num_heads=6, num_layers=5, dropout=0.2),
+        TransformerConfig(emb_dim=256, ffn_size=1024, num_heads=8, num_layers=4, dropout=0.2),
+        TransformerConfig(emb_dim=256, ffn_size=1024, num_heads=8, num_layers=5, dropout=0.2),
     ]
 
     # 将每组配置组合到 PipelineConfig 中

@@ -17,7 +17,7 @@ def test_translation_transformer():
         save_dir='checkpoints',
         log_dir='logs',
         num_epoch=32,
-        batch_size=128,
+        batch_size=64,
         loss_interval=10,
         acc_interval=100,
         lr=1e-3,
@@ -56,6 +56,7 @@ def test_translation_transformer():
         configs.append(PipelineConfig(base_config, transformer_config, translation_configs))
     
     for config in configs:
+        print(config)
         try:
             train_dataset, val_dataset, test_dataset = get_datasets(config)
             collator = get_collators(config)

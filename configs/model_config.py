@@ -9,18 +9,21 @@ class TextModelConfig:
 
 @dataclass
 class CNNConfig(TextModelConfig):
-    filter_sizes: str = "[3,4,5]"
-    num_filters: str = "[2,2,2]"
+    filter_sizes: str|list[int] = field(default_factory=[3,4,5])
+    num_filters: str|list[int] = field(default_factory=[2,2,2])
     dropout: float = 0.5
     
-    def __post_init__(self):  
+    def __post_init__(self):
+        # Since the `filter_sizes` and `num_filters` could be list[int] or a str of list[int]
         try:
-            self.filter_sizes: list[int] = eval(self.filter_sizes)
+            self.filter_sizes: list[int] = eval(self.filter_sizes) if isinstance(self.filter_sizes, str) \
+                else self.filter_sizes
         except:
             raise ValueError("Invalid filter_sizes format. Please use the format: [size1, size2, ...]")
         
         try:
-            self.num_filters: list[int] = eval(self.num_filters)
+            self.num_filters: list[int] = eval(self.num_filters) if isinstance(self.num_filters, str) \
+                else self.num_filters
         except:
             raise ValueError("Invalid num_filters format. Please use the format: [num1, num2, ...]")
         

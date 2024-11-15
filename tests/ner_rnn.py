@@ -87,4 +87,4 @@ def test_ner_rnn():
         except Exception as e:
             logging.error(f"Failed to train model with config: {config}")
             with open('failed_configs.txt', 'a') as f:
-                f.write(f"{config}\n")
+                f.write(f"Error{e}\n{config}\n\n")
