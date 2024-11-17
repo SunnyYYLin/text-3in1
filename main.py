@@ -4,6 +4,8 @@ from datasets import get_datasets, get_collators
 from metrics import get_metrics
 from transformers.trainer import Trainer
 from transformers.trainer_callback import EarlyStoppingCallback
+from utils.examples import get_examples
+import random
 
 if __name__ == '__main__':
     # reading config
@@ -37,10 +39,14 @@ if __name__ == '__main__':
                       )
     trainer.label_names = config.label_names
     
-    if config.mode == 'train':
-        # training
-        trainer.train()
-    
-    # testing
-    results = trainer.evaluate(test_dataset)
-    print(results)
+    match config.mode:
+        case 'train':
+            trainer.train()
+        case 'test':
+            results = trainer.evaluate(test_dataset)
+            print(results)
+        case 'example':
+            examples = get_examples(trainer.model, test_dataset, config)
+            print(examples)
+        case _:
+            raise NotImplementedError(f"Mode {config.mode} not implemented")

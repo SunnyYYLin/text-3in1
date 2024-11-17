@@ -54,6 +54,8 @@ class SentimentDataset(Dataset):
         # 读取词汇表
         with open(vocab_path, 'r', encoding='utf-8') as f:
             self.vocab: dict[str, int] = json.load(f)
+        self.id2token = {v: k for k, v in self.vocab.items()}
+        self.token2id = self.vocab
         self.data = self.load_data(data_path)
     
     def load_data(self, data_path) -> list[dict]:
@@ -75,3 +77,8 @@ class SentimentDataset(Dataset):
     def __getitem__(self, index):
         return self.data[index]
     
+    def decode_input(self, input_ids: torch.LongTensor) -> str:
+        return ''.join([self.id2token[idx.item()] for idx in input_ids if idx != PADDING_IDX])
+    
+    def decode_label(self, label: torch.LongTensor) -> str:
+        return 'positive' if label.item() == 1 else 'negative'

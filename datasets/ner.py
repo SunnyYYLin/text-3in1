@@ -40,7 +40,11 @@ class NERDataset(Dataset):
         chr_vocab_path = os.path.join(path, 'chr_vocab.json')
         tag_vocab_path = os.path.join(path, 'tag_vocab.json')
         self.chr_vocab = json.load(open(chr_vocab_path, 'r', encoding='utf-8'))
+        self.chr_id2token = {v: k for k, v in self.chr_vocab.items()}
+        self.chr_token2id = self.chr_vocab
         self.tag_vocab = json.load(open(tag_vocab_path, 'r', encoding='utf-8'))
+        self.tag_id2token = {v: k for k, v in self.tag_vocab.items()}
+        self.tag_token2id = self.tag_vocab
         self.data = self.load_data(data_path)
         print(f"Loaded {len(self.data)} samples from {data_path}.")
         
@@ -75,3 +79,9 @@ class NERDataset(Dataset):
             "input_ids": torch.tensor(char_ids, dtype=torch.long),
             "labels": torch.tensor(tag_ids, dtype=torch.long)
         }
+
+    def decode_input(self, input_ids: torch.LongTensor) -> str:
+        return ' '.join([self.chr_id2token[idx] for idx in input_ids.tolist() if idx != PADDING_IDX])
+    
+    def decode_label(self, label_ids: torch.LongTensor, attn_mask: torch.BoolTensor) -> str:
+        return ' '.join([self.tag_id2token[idx] for idx, mask in zip(label_ids.tolist(), attn_mask.tolist()) if mask])

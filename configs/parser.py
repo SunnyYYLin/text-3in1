@@ -11,7 +11,7 @@ class ConfigParser(argparse.ArgumentParser):
         super().__init__()
         
         # base args
-        self.add_argument('--mode', default='train', choices=['train', 'test'])
+        self.add_argument('--mode', default='train', choices=['train', 'test', 'example'])
         self.add_argument('--task', default='sentiment', choices=['sentiment', 'ner', 'translation'])
         self.add_argument('--model', default='cnn')
         self.add_argument('--data_dir', default='data')

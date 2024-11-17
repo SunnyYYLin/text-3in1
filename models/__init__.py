@@ -15,13 +15,12 @@ def get_model(config):
         case _:
             raise NotImplementedError(f"Unsupported task: {config.task}")
     
-    if config.mode == 'test':
+    if config.mode == 'test' or 'example':
         checkpoint_list = os.listdir(config.save_path)
-        assert len(checkpoint_list) > 0, 'No checkpoint found'
+        assert len(checkpoint_list) > 0, f'No checkpoint found from {config.save_path}'
         best_step = sorted(checkpoint_list, key=lambda x: int(x.split('-')[-1]))[-1]
         checkpoint_path = os.path.join(config.save_path, best_step, 'model.safetensors')
         model.load_state_dict(load_file(checkpoint_path))
-    
-    print(model)
+        print(f"Load model from {checkpoint_path}")
     
     return model

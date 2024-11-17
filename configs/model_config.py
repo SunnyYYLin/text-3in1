@@ -9,8 +9,8 @@ class TextModelConfig:
 
 @dataclass
 class CNNConfig(TextModelConfig):
-    filter_sizes: str|list[int] = field(default_factory=[3,4,5])
-    num_filters: str|list[int] = field(default_factory=[2,2,2])
+    filter_sizes: str|list[int] = field(default_factory=lambda: [3,4,5])
+    num_filters: str|list[int] = field(default_factory=lambda: [2,2,2])
     dropout: float = 0.5
     
     def __post_init__(self):

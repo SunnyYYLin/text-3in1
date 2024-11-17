@@ -34,9 +34,3 @@ class SentimentModel(nn.Module):
             loss = self.loss(logits, labels)
             return {'logits': logits, 'loss': loss}
         return {'logits': logits}
-    
-    def predict(self, **kwargs) -> torch.LongTensor:
-        with torch.no_grad():
-            logits = self.forward(**kwargs)['logits']
-            tag = torch.argmax(logits, dim=-1)
-            return tag

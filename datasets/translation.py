@@ -7,7 +7,7 @@ from transformers.data.data_collator import DataCollatorMixin
 PADDING_IDX = 3
 EN_UNK_ID = 2
 ZH_UNK_ID = 2
-TOKEN_MARK = '@@'
+TOKEN_IDENTIFIER = '@@'
     
 class TranslationDataCollator(DataCollatorMixin):
     """封装了自定义的 collate_fn, 用于 Hugging Face 的 Trainer。"""
@@ -49,6 +49,10 @@ class TranslationDataset(Dataset):
             self.zh_vocab = json.load(f)
         with open(en_vocab_path, 'r', encoding='utf-8') as f:
             self.en_vocab = json.load(f)
+        self.zh_id2token = {v: k for k, v in self.zh_vocab.items()}
+        self.zh_token2id = self.zh_vocab
+        self.en_id2token = {v: k for k, v in self.en_vocab.items()}
+        self.en_token2id = self.en_vocab
         self.tgt_texts = self.load_data(zh_path)
         self.src_texts = self.load_data(en_path)
         assert len(self.src_texts) == len(self.tgt_texts), "Mismatched source and target lengths."
@@ -56,7 +60,7 @@ class TranslationDataset(Dataset):
     def load_data(self, data_path: str) -> list[str]:
         with open(data_path, 'r', encoding='utf-8') as f:
             sentences = f.readlines()
-        data = [sentence.strip().replace(TOKEN_MARK, ' ').split() for sentence in sentences]
+        data = [sentence.strip().split() for sentence in sentences]
         return data
     
     def __len__(self):
@@ -73,6 +77,14 @@ class TranslationDataset(Dataset):
             "src_ids": src_ids,
             "tgt_ids": tgt_ids
         }
+        
+    def decode_src(self, ids: torch.LongTensor, attn_mask: torch.BoolTensor) -> str:
+        text = " ".join(self.en_id2token[id.item()] for id, mask in zip(ids, attn_mask) if mask)
+        return text.replace(TOKEN_IDENTIFIER+' ', '')
+    
+    def decode_tgt(self, ids: torch.LongTensor, attn_mask: torch.BoolTensor) -> str:
+        text = "".join(self.zh_id2token[id.item()] for id, mask in zip(ids, attn_mask) if mask)
+        return text.replace(TOKEN_IDENTIFIER, '')
 
 if __name__ == "__main__":
     dataset = TranslationDataset(path="data/translation", part="train")
