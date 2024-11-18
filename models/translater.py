@@ -41,7 +41,7 @@ class Translater(nn.Module):
         tgt_mask = self.backbone.generate_square_subsequent_mask(tgt_ids.size(1)).to(tgt_ids.device)
         src_padding_mask = ~src_padding_mask if src_padding_mask is not None else None
         tgt_padding_mask = ~tgt_padding_mask if tgt_padding_mask is not None else None
-        tgt_mask = ~(tgt_mask == 0.0).bool()
+        # tgt_mask = ~(tgt_mask == 0.0).bool()
         
         transformer_output = self.backbone(
             src=src_embs,
