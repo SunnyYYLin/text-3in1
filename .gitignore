@@ -162,6 +162,8 @@ cython_debug/
 #.idea/
 
 *.rar
+*.tar
+*.zip
 logs/
 slurm_logs/
 data/
@@ -170,3 +172,4 @@ checkpoints/
 .vscode/
 failed_configs.txt
 temp.txt
+zi42STIR

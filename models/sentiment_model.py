@@ -13,10 +13,16 @@ class SentimentModel(nn.Module):
         self.embedding = nn.Embedding(
             num_embeddings=config.vocab_size + 1,
             embedding_dim=config.emb_dim,
-            padding_idx=8019
+            padding_idx=PAD_ID
         )
         self.backbone = model_cls(config)
-        self.classifier = nn.LazyLinear(config.num_classes)
+        sizes = config.mlp_dims + [config.num_classes]
+        mlp_layers = [nn.LazyLinear(out_features=size) for size in sizes]
+        activations = [nn.ReLU() for _ in range(len(mlp_layers) - 1)] + [nn.Identity()]
+        dropouts = [nn.Dropout(p=config.dropout) for _ in range(len(mlp_layers) - 1)] + [nn.Identity()]
+        self.classifier = nn.Sequential(*[
+            layer for layers in zip(mlp_layers, activations, dropouts) for layer in layers
+        ])
         self.loss = nn.CrossEntropyLoss()
         self._init_lazy()
         

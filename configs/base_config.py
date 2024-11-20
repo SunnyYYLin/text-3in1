@@ -22,10 +22,11 @@ class BaseConfig:
     lr: float = 1e-3
     fp16: bool = False
     device: str = 'cuda' if torch.cuda.is_available() else 'cpu'
-    verbose: bool = False
+    verbose: bool = True
     seed: int = 42
     save_best: bool = True
     early_stopping: int = 5
+    grad_clip: float = 5.0
     
     def __post_init__(self):
         self.data_dir = Path(self.data_dir)

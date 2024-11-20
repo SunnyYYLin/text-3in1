@@ -26,8 +26,20 @@ class Translater(nn.Module):
             dropout=config.dropout,
             batch_first=True  # 设置 batch_first 为 True 以简化处理
         )
-        self.generator = nn.Linear(config.emb_dim, config.tgt_vocab_size)
+        sizes = config.mlp_dims + [config.tgt_vocab_size]
+        mlp_layers = [nn.LazyLinear(out_features=size) for size in sizes]
+        activations = [nn.ReLU() for _ in range(len(mlp_layers) - 1)] + [nn.Identity()]
+        dropouts = [nn.Dropout(p=config.dropout) for _ in range(len(mlp_layers) - 1)] + [nn.Identity()]
+        self.generator = nn.Sequential(*[
+            layer for layers in zip(mlp_layers, activations, dropouts) for layer in layers
+        ])
         self.loss_fn = nn.CrossEntropyLoss(ignore_index=PAD_ID)  # 使用 PAD_ID 作为忽略索引
+        self._init_lazy()
+        
+    def _init_lazy(self):
+        dummy_src = torch.zeros((1, 32), dtype=torch.long)
+        dummy_tgt = torch.zeros((1, 32), dtype=torch.long)
+        self.forward(dummy_src, tgt_ids=dummy_tgt)
     
     def forward(self, src_ids: torch.LongTensor, 
                 src_padding_mask: torch.BoolTensor=None, 

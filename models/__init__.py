@@ -26,14 +26,13 @@ def get_model(config: PipelineConfig):
         case _:
             raise NotImplementedError(f"Unsupported task: {config.task}")
     
-    if config.mode == 'test' or 'example':
+    if config.mode == 'test' or config.mode == 'example':
         checkpoint_list = os.listdir(config.model_dir)
         assert len(checkpoint_list) > 0, f'No checkpoint found from {config.model_dir}'
         best_step = sorted(checkpoint_list, key=lambda x: int(x.split('-')[-1]))[-1]
         checkpoint_path = os.path.join(config.model_dir, best_step, 'model.safetensors')
-        model.load_state_dict(load_file(checkpoint_path))
-        print(model)
         print(f"Load model from {checkpoint_path}")
+        model.load_state_dict(load_file(checkpoint_path))
         return model
     
     return model

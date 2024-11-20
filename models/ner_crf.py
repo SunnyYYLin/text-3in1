@@ -14,7 +14,13 @@ class NER_CRF(nn.Module):
             padding_idx=-1
         )
         self.backbone = model_cls(config)
-        self.classifier = nn.LazyLinear(config.num_tags + 2) # add START and END state
+        sizes = config.mlp_dims + [config.num_tags + 2]
+        mlp_layers = [nn.LazyLinear(out_features=size) for size in sizes]
+        activations = [nn.ReLU() for _ in range(len(mlp_layers) - 1)] + [nn.Identity()]
+        dropouts = [nn.Dropout(p=config.dropout) for _ in range(len(mlp_layers) - 1)] + [nn.Identity()]
+        self.classifier = nn.Sequential(*[
+            layer for layers in zip(mlp_layers, activations, dropouts) for layer in layers
+        ])
         self.crf = CRF(config.num_tags, config.device != 'cpu')
         self._init_lazy()
         

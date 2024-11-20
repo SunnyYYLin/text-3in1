@@ -34,6 +34,8 @@ class ConfigParser(argparse.ArgumentParser):
                           help="保存验证集上表现最好的模型")
         self.add_argument('--early_stopping', type=int, default=5, 
                           help="早停策略：在验证集上如果连续 N 轮无提升则停止训练")
+        self.add_argument('--grad_clip', type=float, default=5.0,
+                          help="梯度裁剪阈值")
         self.add_argument('--model_dir', default=None, type=str,
                           help="如果是测试，加载模型的路径，如果留空会自动从模型参数解析")
 
@@ -71,6 +73,8 @@ class ConfigParser(argparse.ArgumentParser):
                           help="词向量维度")
         self.add_argument('--dropout', default=0.5, type=float, 
                           help="Dropout 比例")
+        self.add_argument('--mlp_dims', default="[]", type=str,
+                          help="MLP 隐藏层大小，格式: '[size1, size2, ...]'")
 
         ## CNN 特定参数
         self.add_argument('--filter_sizes', default="[3,4,5]", type=str,
