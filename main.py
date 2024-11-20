@@ -24,9 +24,9 @@ if __name__ == '__main__':
     model = get_model(config)
     ## trainer
     train_args = config.train_args()
-    metrics = get_metrics(config)
+    metrics = get_metrics(config) 
     early_stopping = EarlyStoppingCallback(
-        early_stopping_patience=6,     # 等待 6 个 evaluation 无改进则停止
+        early_stopping_patience=config.early_stopping,
         early_stopping_threshold=0.001 # 指标变化阈值
     )
     trainer = Trainer(model=model, 

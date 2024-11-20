@@ -39,15 +39,17 @@ class NERTaskConfig:
 
 @dataclass       
 class TranslationTaskConfig:
+    src_lang: str = 'en'
+    tgt_lang: str = 'zh'
     src_vocab_size: int = -1
     tgt_vocab_size: int = -1
     label_names: list[str] = field(default_factory=lambda: ['tgt_ids'])
     
     def init(self, data_path: str):
-        with open(os.path.join(data_path, 'train.en.json'), 
+        with open(os.path.join(data_path, f'train.{self.src_lang}.json'), 
                   'r', encoding='utf-8') as f:
             self.src_vocab_size = len(json.load(f))
-        with open(os.path.join(data_path, 'train.zh.json'), 
+        with open(os.path.join(data_path, f'train.{self.tgt_lang}.json'), 
                   'r', encoding='utf-8') as f:
             self.tgt_vocab_size = len(json.load(f))
     

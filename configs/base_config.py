@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import torch
+from pathlib import Path
 
 @dataclass
 class BaseConfig:
@@ -8,9 +9,10 @@ class BaseConfig:
     model: str = 'cnn'
     
     # data paths
-    data_dir: str = 'data'
-    save_dir: str = 'checkpoints'
-    log_dir: str = 'logs'
+    data_dir: Path = Path('data')
+    save_dir: Path = Path('checkpoints')
+    log_dir: Path = Path('logs')
+    model_dir: Path|None = None
     
     # training parameters
     num_epoch: int = 16
@@ -20,4 +22,14 @@ class BaseConfig:
     lr: float = 1e-3
     fp16: bool = False
     device: str = 'cuda' if torch.cuda.is_available() else 'cpu'
-    verbose: bool = True
+    verbose: bool = False
+    seed: int = 42
+    save_best: bool = True
+    early_stopping: int = 5
+    
+    def __post_init__(self):
+        self.data_dir = Path(self.data_dir)
+        self.save_dir = Path(self.save_dir)
+        self.log_dir = Path(self.log_dir)
+        if self.model_dir is not None:
+            self.model_dir = Path(self.model_dir)

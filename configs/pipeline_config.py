@@ -1,5 +1,6 @@
 import os
 from dataclasses import dataclass
+from pathlib import Path
 from transformers.trainer import TrainingArguments
 from .base_config import BaseConfig
 from .model_config import ModelConfig
@@ -13,9 +14,9 @@ class PipelineConfig:
 
     def __post_init__(self):
         # make sure the data, log, and save directories exist
-        self.data_path = os.path.join(self.base_config.data_dir, self.base_config.task)
-        self.log_path = os.path.join(self.base_config.log_dir, self.base_config.task, self.model_config.abbr())
-        self.save_path = os.path.join(self.base_config.save_dir, self.base_config.task, self.model_config.abbr())
+        self.data_path = self.base_config.data_dir/self.base_config.task
+        self.log_path = self.base_config.log_dir/self.base_config.task/self.model_config.abbr()
+        self.save_path = self.base_config.save_dir/self.base_config.task/self.model_config.abbr()
         if not os.path.exists(self.log_path):
             os.makedirs(self.log_path)
         if not os.path.exists(self.save_path):

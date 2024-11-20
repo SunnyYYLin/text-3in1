@@ -41,7 +41,7 @@ class CNNConfig(TextModelConfig):
         num_filters = eval(config_list[2].removeprefix('num'))
         emb_dim = int(config_list[3].removeprefix('emb'))
         dropout = float(config_list[4].removeprefix('dropout'))
-        config = CNNConfig(filter_sizes=filter_sizes, num_filters=num_filters, emb_dim=emb_dim)
+        config = CNNConfig(filter_sizes=filter_sizes, num_filters=num_filters, emb_dim=emb_dim, dropout=dropout)
         return config
         
 @dataclass
@@ -76,13 +76,13 @@ class RNNConfig(TextModelConfig):
         bidirectional = True if 'bi' in config_list else False
         config = RNNConfig(rnn_type=rnn_type, num_layers=num_layers,
                                hidden_size=hidden_size, emb_dim=emb_dim,
-                               bidirectional=bidirectional)
+                               bidirectional=bidirectional, dropout=dropout)
         return config
     
 @dataclass
 class TransformerConfig(TextModelConfig):
     ffn_size: int = 128
-    num_heads: int = 8
+    num_heads: int = 4
     num_layers: int = 2
     only_one: bool = True  # 是否只使用一个输出
     dropout: float = 0.1
@@ -100,13 +100,13 @@ class TransformerConfig(TextModelConfig):
     def from_abbr(abbr: str):
         """Return a TextTransformerConfig object from an abbreviation string."""
         config_list = abbr.split('_')
-        num_layers = int(config_list[0].removeprefix('layers'))
-        hidden_size = int(config_list[1].removeprefix('ffnsize'))
-        num_heads = int(config_list[2].removeprefix('heads'))
-        emb_dim = int(config_list[3].removeprefix('emb'))
-        dropout = float(config_list[4].removeprefix('dropout'))
-        config = TransformerConfig(num_layers=num_layers, hidden_size=hidden_size,
-                                       num_heads=num_heads, emb_dim=emb_dim)
+        num_layers = int(config_list[1].removeprefix('layers'))
+        ffn_size = int(config_list[2].removeprefix('ffnsize'))
+        num_heads = int(config_list[3].removeprefix('heads'))
+        emb_dim = int(config_list[4].removeprefix('emb'))
+        dropout = float(config_list[5].removeprefix('dropout'))
+        config = TransformerConfig(num_layers=num_layers, ffn_size=ffn_size,
+                                       num_heads=num_heads, emb_dim=emb_dim, dropout=dropout)
         return config
 
 ModelConfig: TypeAlias = CNNConfig|RNNConfig|TransformerConfig
@@ -115,3 +115,20 @@ MODEL_CONFIG_CLASSES = {
     'rnn': RNNConfig,
     'transformer': TransformerConfig
 }
+CLASSES2STR = {
+    CNNConfig: 'cnn',
+    RNNConfig: 'rnn',
+    TransformerConfig: 'transformer'
+}
+
+def get_model_config_from_abbr(abbr: str) -> ModelConfig:
+    """Return a model config object from an abbreviation string."""
+    model_type = abbr.split('_')[0]
+    if model_type == 'CNN':
+        return CNNConfig.from_abbr(abbr)
+    elif model_type in ['LSTM', 'GRU']:
+        return RNNConfig.from_abbr(abbr)
+    elif model_type == 'Transformer':
+        return TransformerConfig.from_abbr(abbr)
+    else:
+        raise ValueError(f"Invalid model type: {model_type}")
