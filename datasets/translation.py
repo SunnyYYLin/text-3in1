@@ -4,23 +4,24 @@ import torch
 from torch.utils.data import Dataset
 from transformers.data.data_collator import DataCollatorMixin
 
-PADDING_IDX = 3
-EN_UNK_ID = 2
-ZH_UNK_ID = 2
+EOS_ID = 0
+GO_ID = 1
+UNK_ID = 2
+PAD_ID = 3
 TOKEN_IDENTIFIER = '@@'
     
 class TranslationDataCollator(DataCollatorMixin):
     """封装了自定义的 collate_fn, 用于 Hugging Face 的 Trainer。"""
-    def __call__(self, features: list[dict[str, torch.Tensor]]) -> dict[str, torch.Tensor]:
-        src_ids = [f["src_ids"] for f in features]
-        tgt_ids = [f["tgt_ids"] for f in features]
+    def __call__(self, features: list[dict[str, list[int]]]) -> dict[str, torch.Tensor]:
+        src_ids = [[GO_ID]+f["src_ids"]+[EOS_ID] for f in features]
+        tgt_ids = [[GO_ID]+f["tgt_ids"]+[EOS_ID] for f in features]
         batch_size = len(src_ids)
         assert len(src_ids) == len(tgt_ids), "Mismatched input and label lengths."
         src_max_len = max(len(ids) for ids in src_ids)
         tgt_max_len = max(len(ids) for ids in tgt_ids)
         
-        padded_src_ids = torch.full((batch_size, src_max_len), PADDING_IDX, dtype=torch.long)
-        padded_tgt_ids = torch.full((batch_size, tgt_max_len), PADDING_IDX, dtype=torch.long)
+        padded_src_ids = torch.full((batch_size, src_max_len), PAD_ID, dtype=torch.long)
+        padded_tgt_ids = torch.full((batch_size, tgt_max_len), PAD_ID, dtype=torch.long)
         src_mask = torch.zeros((batch_size, src_max_len), dtype=torch.bool)
         tgt_mask = torch.zeros((batch_size, tgt_max_len), dtype=torch.bool)
         
@@ -46,9 +47,9 @@ class TranslationDataset(Dataset):
         zh_vocab_path = os.path.join(path, f'train.zh.json')
         en_vocab_path = os.path.join(path, f'train.en.json')
         with open(zh_vocab_path, 'r', encoding='utf-8') as f:
-            self.zh_vocab = json.load(f)
+            self.zh_vocab: dict[str, int] = json.load(f)
         with open(en_vocab_path, 'r', encoding='utf-8') as f:
-            self.en_vocab = json.load(f)
+            self.en_vocab: dict[str, int] = json.load(f)
         self.zh_id2token = {v: k for k, v in self.zh_vocab.items()}
         self.zh_token2id = self.zh_vocab
         self.en_id2token = {v: k for k, v in self.en_vocab.items()}
@@ -70,8 +71,8 @@ class TranslationDataset(Dataset):
         src_text = self.src_texts[idx]
         tgt_text = self.tgt_texts[idx]
         
-        src_ids = [self.en_vocab.get(token, EN_UNK_ID) for token in src_text]
-        tgt_ids = [self.zh_vocab.get(token, ZH_UNK_ID) for token in tgt_text]
+        src_ids = [self.en_vocab.get(token, UNK_ID) for token in src_text]
+        tgt_ids = [self.zh_vocab.get(token, UNK_ID) for token in tgt_text]
         
         return {
             "src_ids": src_ids,
