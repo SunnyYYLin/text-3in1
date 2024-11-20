@@ -3,7 +3,7 @@ import torch.nn as nn
 from configs import PipelineConfig
 from .backbone import get_backbone
 
-PADDING_IDX = 8019
+PAD_ID = 8019
 
 class SentimentModel(nn.Module):
     def __init__(self, config: PipelineConfig) -> None:

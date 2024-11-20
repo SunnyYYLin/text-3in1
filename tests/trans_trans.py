@@ -31,23 +31,23 @@ def test_translation_transformer():
         TransformerConfig(emb_dim=256, ffn_size=1024, num_heads=4, num_layers=2, dropout=0.1),
         TransformerConfig(emb_dim=256, ffn_size=1024, num_heads=4, num_layers=4, dropout=0.2),
         
-        # 增加模型深度，提高表达能力
-        TransformerConfig(emb_dim=256, ffn_size=2048, num_heads=4, num_layers=6, dropout=0.1),
-        TransformerConfig(emb_dim=256, ffn_size=2048, num_heads=4, num_layers=6, dropout=0.3),
+        # # 增加模型深度，提高表达能力
+        # TransformerConfig(emb_dim=256, ffn_size=2048, num_heads=4, num_layers=6, dropout=0.1),
+        # TransformerConfig(emb_dim=256, ffn_size=2048, num_heads=4, num_layers=6, dropout=0.3),
         
-        # 使用较大嵌入维度
-        TransformerConfig(emb_dim=512, ffn_size=1024, num_heads=8, num_layers=4, dropout=0.1),
-        TransformerConfig(emb_dim=512, ffn_size=2048, num_heads=8, num_layers=4, dropout=0.3),
+        # # 使用较大嵌入维度
+        # TransformerConfig(emb_dim=512, ffn_size=1024, num_heads=8, num_layers=4, dropout=0.1),
+        # TransformerConfig(emb_dim=512, ffn_size=2048, num_heads=8, num_layers=4, dropout=0.3),
         
-        # 更高的模型深度和参数
-        TransformerConfig(emb_dim=512, ffn_size=2048, num_heads=8, num_layers=6, dropout=0.1),
-        TransformerConfig(emb_dim=512, ffn_size=2048, num_heads=8, num_layers=6, dropout=0.3),
+        # # 更高的模型深度和参数
+        # TransformerConfig(emb_dim=512, ffn_size=2048, num_heads=8, num_layers=6, dropout=0.1),
+        # TransformerConfig(emb_dim=512, ffn_size=2048, num_heads=8, num_layers=6, dropout=0.3),
         
-        # 极简配置，用于基线测试
-        TransformerConfig(emb_dim=256, ffn_size=1024, num_heads=4, num_layers=2, dropout=0.3),
+        # # 极简配置，用于基线测试
+        # TransformerConfig(emb_dim=256, ffn_size=1024, num_heads=4, num_layers=2, dropout=0.3),
         
-        # 尽量大参数配置，用于高资源环境测试
-        TransformerConfig(emb_dim=512, ffn_size=2048, num_heads=8, num_layers=6, dropout=0.1),
+        # # 尽量大参数配置，用于高资源环境测试
+        # TransformerConfig(emb_dim=512, ffn_size=2048, num_heads=8, num_layers=6, dropout=0.1),
     ]
 
     # 将每组配置组合到 PipelineConfig 中
