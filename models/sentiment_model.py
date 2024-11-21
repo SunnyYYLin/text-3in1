@@ -3,17 +3,15 @@ import torch.nn as nn
 from configs import PipelineConfig
 from .backbone import get_backbone
 
-PAD_ID = 8019
-
 class SentimentModel(nn.Module):
     def __init__(self, config: PipelineConfig) -> None:
         super(SentimentModel, self).__init__()
         model_cls = get_backbone(config.model)
         print(config.emb_dim)
         self.embedding = nn.Embedding(
-            num_embeddings=config.vocab_size + 1,
+            num_embeddings=config.vocab_size + 2,
             embedding_dim=config.emb_dim,
-            padding_idx=PAD_ID
+            padding_idx=config.PAD_ID
         )
         self.backbone = model_cls(config)
         sizes = config.mlp_dims + [config.num_classes]

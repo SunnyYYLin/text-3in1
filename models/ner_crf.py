@@ -9,7 +9,7 @@ class NER_CRF(nn.Module):
         super(NER_CRF, self).__init__()
         model_cls = get_backbone(config.model)
         self.embedding = nn.Embedding(
-            num_embeddings=config.vocab_size + 1,
+            num_embeddings=config.vocab_size,
             embedding_dim=config.emb_dim,
             padding_idx=-1
         )

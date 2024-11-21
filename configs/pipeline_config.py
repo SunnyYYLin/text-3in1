@@ -22,8 +22,7 @@ class PipelineConfig:
         if not os.path.exists(self.save_path):
             os.makedirs(self.save_path)
         
-        # set the vocab_size, num_tags, num_classes, only_last or something about model
-        self.task_config.init(self.data_path)
+        # set the only_last or something about model
         self.model_config = self.task_config.modify_model(self.model_config)
 
     def __getattr__(self, attr):

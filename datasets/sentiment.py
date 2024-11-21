@@ -3,18 +3,21 @@ import os
 import torch
 from torch.utils.data import Dataset
 from transformers.data.data_collator import DataCollatorMixin
+from configs import PipelineConfig
 
 UNK = 'UNK'
-PADDING_IDX = 8019
+PAD = '[PAD]'
+CLS = '[CLS]'
+SEP = '[SEP]'
 
-def collate_fn(batch: list[dict[str, ]]) -> dict[str, torch.Tensor]:
-    texts: list[list[int]] = [item['input_ids'] for item in batch]
+def collate_fn(batch: list[dict[str, list[int]|int]]) -> dict[str, torch.Tensor]:
+    texts: list[list[int]] = [[CLS_ID]+item['input_ids']+[SEP_ID] for item in batch]
     labels: list[int] = [item['label'] for item in batch]
 
     batch_size = len(texts)
     max_length = max(len(text) for text in texts)
 
-    input_ids = torch.full((batch_size, max_length), PADDING_IDX, dtype=torch.long)
+    input_ids = torch.full((batch_size, max_length), PAD_ID, dtype=torch.long)
     attention_mask = torch.zeros((batch_size, max_length), dtype=torch.bool)
     for i, text in enumerate(texts):
         input_ids[i, :len(text)] = torch.tensor(text, dtype=torch.long)
@@ -30,35 +33,37 @@ class SentimentDataCollator(DataCollatorMixin):
         return collate_fn(features)
 
 class SentimentDataset(Dataset):
-    """
-    SentimentDataset is a custom dataset class for sentiment analysis tasks. It loads and shuffles data from a JSONL file,
-    Each sample {'input_ids':list[int], 'label':int} in the dataset contains tokenized text converted to IDs and a label.
-    
-    Attributes:
-        vocab (dict[str, int]): A dictionary mapping words to their corresponding IDs.
-        data (list[dict]): A list of dictionaries containing tokenized text and labels.
-    Methods:
-        __init__(path: str, part: str) -> None:
-            Initializes the SentimentDataset with the given path and part.
-        load_data(data_path: str) -> list[dict]:
-            Loads and shuffles the data from the specified JSONL file, converts text to IDs, and stores labels.
-        __len__() -> int:
-            Returns the number of samples in the dataset.
-        __getitem__(index: int) -> dict:
-            Returns the sample at the specified index.
-    """
-    
-    def __init__(self, path: str, part: str) -> None:
+    def __init__(self, config: PipelineConfig, part: str) -> None:
+        path = config.data_path
         vocab_path = os.path.join(path, 'vocab.json')
         data_path = os.path.join(path, f'{part}.jsonl')
         # 读取词汇表
         with open(vocab_path, 'r', encoding='utf-8') as f:
             self.vocab: dict[str, int] = json.load(f)
+        # 特殊token加入词汇表
+        global PAD_ID
+        global CLS_ID
+        global SEP_ID
+        PAD_ID = len(self.vocab)
+        CLS_ID = PAD_ID + 1
+        SEP_ID = CLS_ID + 1
+        config.PAD_ID = PAD_ID
+        config.CLS_ID = CLS_ID
+        config.SEP_ID = SEP_ID
+        self.vocab[PAD] = PAD_ID
+        self.vocab[CLS] = CLS_ID
+        self.vocab[SEP] = SEP_ID
+        
         self.id2token = {v: k for k, v in self.vocab.items()}
         self.token2id = self.vocab
+        
         self.data = self.load_data(data_path)
+        config.num_classes = len(set(item['label'] for item in self.data))
+        config.vocab_size = len(self.vocab)
+        print(f"Loaded {len(self.data)} samples from {data_path}")
+        print(f"Vocab size: {config.vocab_size}, Num classes: {config.num_classes}")
     
-    def load_data(self, data_path) -> list[dict]:
+    def load_data(self, data_path) -> list[dict[str, list[int]|int]]:
         with open(data_path, 'r', encoding='utf-8') as f:
             raw_data: list[dict[str, str]] = [json.loads(line) for line in f.readlines()]
         
@@ -78,7 +83,7 @@ class SentimentDataset(Dataset):
         return self.data[index]
     
     def decode_input(self, input_ids: torch.LongTensor) -> str:
-        return ''.join([self.id2token[idx.item()] for idx in input_ids if idx != PADDING_IDX])
+        return ''.join([self.id2token[id.item()] for id in input_ids if id != PAD_ID])
     
     def decode_label(self, label: torch.LongTensor) -> str:
         return 'positive' if label.item() == 1 else 'negative'

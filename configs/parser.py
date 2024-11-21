@@ -55,8 +55,6 @@ class ConfigParser(argparse.ArgumentParser):
 
         # 任务参数
         ## 情感分析
-        self.add_argument('--num_classes', default=2, type=int, 
-                          help="情感分析的类别数量")
         
         ## 命名实体识别
 
@@ -65,8 +63,6 @@ class ConfigParser(argparse.ArgumentParser):
                           help="翻译任务的源语言")
         self.add_argument('--tgt_lang', default='zh', type=str, 
                           help="翻译任务的目标语言")
-        self.add_argument('--max_seq_len', default=512, type=int, 
-                          help="翻译任务的最大序列长度")
         
         # 模型参数
         self.add_argument('--emb_dim', default=256, type=int, 

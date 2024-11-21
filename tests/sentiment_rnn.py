@@ -79,6 +79,6 @@ def test_sentiment_rnn():
             trainer.label_names = config.label_names
             trainer.train()
         except Exception as e:
-            logging.error(f"Failed to train model with config: {config}")
+            logging.error(e)
             with open('failed_configs.txt', 'a') as f:
-                f.write(f"{config}\n")
+                f.write(f"Error:{e}\n{config}\n")

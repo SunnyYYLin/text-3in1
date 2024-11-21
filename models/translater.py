@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 from configs import PipelineConfig
 
-PAD_ID = 3
 class Translater(nn.Module):
     def __init__(self, config: PipelineConfig) -> None:
         super(Translater, self).__init__()
@@ -10,12 +9,12 @@ class Translater(nn.Module):
         self.src_embedding = nn.Embedding(
             num_embeddings=config.src_vocab_size,
             embedding_dim=config.emb_dim,
-            padding_idx=PAD_ID
+            padding_idx=config.SRC_PAD_ID
         )
         self.tgt_embedding = nn.Embedding(
             num_embeddings=config.tgt_vocab_size,
             embedding_dim=config.emb_dim,
-            padding_idx=PAD_ID
+            padding_idx=config.TGT_PAD_ID
         )
         self.backbone = backbone_cls(
             d_model=config.emb_dim,
@@ -33,7 +32,7 @@ class Translater(nn.Module):
         self.generator = nn.Sequential(*[
             layer for layers in zip(mlp_layers, activations, dropouts) for layer in layers
         ])
-        self.loss_fn = nn.CrossEntropyLoss(ignore_index=PAD_ID)  # 使用 PAD_ID 作为忽略索引
+        self.loss_fn = nn.CrossEntropyLoss(ignore_index=config.TGT_PAD_ID)  # 使用 PAD_ID 作为忽略索引
         self._init_lazy()
         
     def _init_lazy(self):

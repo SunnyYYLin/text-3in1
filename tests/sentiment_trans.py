@@ -52,6 +52,7 @@ def test_sentiment_transformer():
             train_args = config.train_args()
             metrics = get_metrics(config)
             model = get_model(config)
+            print(model)
             early_stopping = EarlyStoppingCallback(
                 early_stopping_patience=6,
                 early_stopping_threshold=0.001
@@ -67,6 +68,6 @@ def test_sentiment_transformer():
             trainer.label_names = config.label_names
             trainer.train()
         except Exception as e:
-            logging.error(f"Failed to train model with config: {config}")
+            logging.error(e)
             with open('failed_configs.txt', 'a') as f:
-                f.write(f"{config}\n")
+                f.write(f"Error:{e}\n{config}\n")

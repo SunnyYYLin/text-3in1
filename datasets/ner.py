@@ -1,11 +1,12 @@
 import json
 import os
 import torch
+from configs import PipelineConfig
 from torch.utils.data import Dataset
 from transformers.data.data_collator import DataCollatorMixin
 
-PADDING_IDX = 4832
-OUTSIDE_TAG = 0
+PAD = '[PAD]'
+PAD_TAG = 'P'
     
 class NERDataCollator(DataCollatorMixin):
     """封装了自定义的 collate_fn, 用于 Hugging Face 的 Trainer。"""
@@ -17,8 +18,8 @@ class NERDataCollator(DataCollatorMixin):
         max_seq_len = max(len(ids) for ids in input_ids)
 
         # 创建填充后的张量
-        word_ids = torch.full((batch_size, max_seq_len), PADDING_IDX, dtype=torch.long)
-        tag_ids = torch.full((batch_size, max_seq_len), OUTSIDE_TAG, dtype=torch.long)
+        word_ids = torch.full((batch_size, max_seq_len), PAD_ID, dtype=torch.long)
+        tag_ids = torch.full((batch_size, max_seq_len), PAD_TAG_ID, dtype=torch.long)
         attention_mask = torch.zeros((batch_size, max_seq_len), dtype=torch.bool)
 
         # 填充每个序列
@@ -34,19 +35,34 @@ class NERDataCollator(DataCollatorMixin):
         }
 
 class NERDataset(Dataset):
-    def __init__(self, path: str, part: str):
+    def __init__(self, config: PipelineConfig, part: str):
         # 加载数据和词汇表
+        path = config.data_path
         data_path = os.path.join(path, f'{part}.txt')
         chr_vocab_path = os.path.join(path, 'chr_vocab.json')
         tag_vocab_path = os.path.join(path, 'tag_vocab.json')
-        self.chr_vocab = json.load(open(chr_vocab_path, 'r', encoding='utf-8'))
+        
+        self.chr_vocab: dict[str, int] = json.load(open(chr_vocab_path, 'r', encoding='utf-8'))
+        global PAD_ID
+        PAD_ID = len(self.chr_vocab)
+        self.chr_vocab[PAD] = PAD_ID
+        config.PAD_ID = PAD_ID
         self.chr_id2token = {v: k for k, v in self.chr_vocab.items()}
         self.chr_token2id = self.chr_vocab
-        self.tag_vocab = json.load(open(tag_vocab_path, 'r', encoding='utf-8'))
+        
+        self.tag_vocab: dict[str, int] = json.load(open(tag_vocab_path, 'r', encoding='utf-8'))
+        global PAD_TAG_ID
+        PAD_TAG_ID = len(self.tag_vocab)
+        self.tag_vocab[PAD_TAG] = PAD_TAG_ID
+        
+        config.PAD_TAG_ID = PAD_TAG_ID
         self.tag_id2token = {v: k for k, v in self.tag_vocab.items()}
         self.tag_token2id = self.tag_vocab
         self.data = self.load_data(data_path)
+        config.num_tags = len(self.tag_vocab)
+        config.vocab_size = len(self.chr_vocab)
         print(f"Loaded {len(self.data)} samples from {data_path}.")
+        print(f"Vocab size: {config.vocab_size}, Num tags: {config.num_tags}")
         
     def load_data(self, data_path: str):
         data = []
@@ -81,7 +97,7 @@ class NERDataset(Dataset):
         }
 
     def decode_input(self, input_ids: torch.LongTensor) -> str:
-        return ' '.join([self.chr_id2token[idx] for idx in input_ids.tolist() if idx != PADDING_IDX])
+        return ' '.join([self.chr_id2token[idx] for idx in input_ids.tolist() if idx != PAD_ID])
     
     def decode_label(self, label_ids: torch.LongTensor, attn_mask: torch.BoolTensor) -> str:
         return ' '.join([self.tag_id2token[idx] for idx, mask in zip(label_ids.tolist(), attn_mask.tolist()) if mask])
