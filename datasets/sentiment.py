@@ -2,28 +2,21 @@ import json
 import os
 import torch
 from torch.utils.data import Dataset
+from torch.nn.utils.rnn import pad_sequence
 from transformers.data.data_collator import DataCollatorMixin
 
 UNK = 'UNK'
-PADDING_IDX = 8019
+PAD_ID = 8019
 
 def collate_fn(batch: list[dict[str, ]]) -> dict[str, torch.Tensor]:
-    texts: list[list[int]] = [item['input_ids'] for item in batch]
+    texts: list[list[int]] = [torch.tensor(item['input_ids'], dtype=torch.long) for item in batch]
     labels: list[int] = [item['label'] for item in batch]
 
-    batch_size = len(texts)
-    max_length = max(len(text) for text in texts)
-
-    input_ids = torch.full((batch_size, max_length), PADDING_IDX, dtype=torch.long)
-    attention_mask = torch.zeros((batch_size, max_length), dtype=torch.bool)
-    for i, text in enumerate(texts):
-        input_ids[i, :len(text)] = torch.tensor(text, dtype=torch.long)
-        attention_mask[i, :len(text)] = True
-
-    # 转换标签为张量
+    padded_input_ids = pad_sequence(texts, batch_first=True, padding_value=PAD_ID)
+    attention_mask = (padded_input_ids != PAD_ID)
     labels = torch.tensor(labels, dtype=torch.long)
 
-    return {"input_ids": input_ids, "attention_mask": attention_mask, "labels": labels}
+    return {"input_ids": padded_input_ids, "attention_mask": attention_mask, "labels": labels}
 
 class SentimentDataCollator(DataCollatorMixin):
     def __call__(self, features: list[dict[str, ]]) -> dict[str, torch.Tensor]:
@@ -78,7 +71,7 @@ class SentimentDataset(Dataset):
         return self.data[index]
     
     def decode_input(self, input_ids: torch.LongTensor) -> str:
-        return ''.join([self.id2token[idx.item()] for idx in input_ids if idx != PADDING_IDX])
+        return ''.join([self.id2token[idx.item()] for idx in input_ids if idx != PAD_ID])
     
     def decode_label(self, label: torch.LongTensor) -> str:
         return 'positive' if label.item() == 1 else 'negative'

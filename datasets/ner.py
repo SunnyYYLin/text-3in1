@@ -2,35 +2,26 @@ import json
 import os
 import torch
 from torch.utils.data import Dataset
+from torch.nn.utils.rnn import pad_sequence
 from transformers.data.data_collator import DataCollatorMixin
 
-PADDING_IDX = 4832
-OUTSIDE_TAG = 0
+PAD_ID = 4832
+O_ID = 0
     
 class NERDataCollator(DataCollatorMixin):
     """封装了自定义的 collate_fn, 用于 Hugging Face 的 Trainer。"""
     def __call__(self, features: list[dict[str, torch.Tensor]]) -> dict[str, torch.Tensor]:
-        input_ids = [f["input_ids"] for f in features]
-        labels = [f["labels"] for f in features]
+        input_ids = [torch.tensor(f["input_ids"], dtype=torch.long) for f in features]
+        labels = [torch.tensor(f["labels"], dtype=torch.long) for f in features]
 
-        batch_size = len(input_ids)
-        max_seq_len = max(len(ids) for ids in input_ids)
-
-        # 创建填充后的张量
-        word_ids = torch.full((batch_size, max_seq_len), PADDING_IDX, dtype=torch.long)
-        tag_ids = torch.full((batch_size, max_seq_len), OUTSIDE_TAG, dtype=torch.long)
-        attention_mask = torch.zeros((batch_size, max_seq_len), dtype=torch.bool)
-
-        # 填充每个序列
-        for i, (word, tag) in enumerate(zip(input_ids, labels)):
-            word_ids[i, :len(word)] = word
-            tag_ids[i, :len(tag)] = tag
-            attention_mask[i, :len(word)] = True
+        padded_input_ids = pad_sequence(input_ids, batch_first=True, padding_value=PAD_ID)
+        attention_mask = (padded_input_ids != PAD_ID)
+        labels = pad_sequence(labels, batch_first=True, padding_value=O_ID)      
 
         return {
-            "input_ids": word_ids,
+            "input_ids": padded_input_ids,
             "attention_mask": attention_mask,
-            "labels": tag_ids
+            "labels": labels
         }
 
 class NERDataset(Dataset):
@@ -81,7 +72,7 @@ class NERDataset(Dataset):
         }
 
     def decode_input(self, input_ids: torch.LongTensor) -> str:
-        return ' '.join([self.chr_id2token[idx] for idx in input_ids.tolist() if idx != PADDING_IDX])
+        return ' '.join([self.chr_id2token[idx] for idx in input_ids.tolist() if idx != PAD_ID])
     
     def decode_label(self, label_ids: torch.LongTensor, attn_mask: torch.BoolTensor) -> str:
         return ' '.join([self.tag_id2token[idx] for idx, mask in zip(label_ids.tolist(), attn_mask.tolist()) if mask])

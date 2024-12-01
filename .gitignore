@@ -170,3 +170,4 @@ checkpoints/
 .vscode/
 failed_configs.txt
 temp.txt
+backup/

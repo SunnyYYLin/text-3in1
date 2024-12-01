@@ -2,6 +2,7 @@ import json
 import os
 import torch
 from torch.utils.data import Dataset
+from torch.nn.utils.rnn import pad_sequence
 from transformers.data.data_collator import DataCollatorMixin
 
 EOS_ID = 0
@@ -13,31 +14,20 @@ TOKEN_IDENTIFIER = '@@'
 class TranslationDataCollator(DataCollatorMixin):
     """封装了自定义的 collate_fn, 用于 Hugging Face 的 Trainer。"""
     def __call__(self, features: list[dict[str, list[int]]]) -> dict[str, torch.Tensor]:
-        src_ids = [[GO_ID]+f["src_ids"]+[EOS_ID] for f in features]
-        tgt_ids = [[GO_ID]+f["tgt_ids"]+[EOS_ID] for f in features]
-        batch_size = len(src_ids)
-        assert len(src_ids) == len(tgt_ids), "Mismatched input and label lengths."
-        src_max_len = max(len(ids) for ids in src_ids)
-        tgt_max_len = max(len(ids) for ids in tgt_ids)
+        src_ids = [torch.tensor(f["src_ids"]+[EOS_ID], dtype=torch.long) for f in features]
+        tgt_ids = [torch.tensor([GO_ID]+f["tgt_ids"]+[EOS_ID], dtype=torch.long) for f in features]
+        assert len(src_ids) == len(tgt_ids), "Mismatched source and target batch sizes."
         
-        padded_src_ids = torch.full((batch_size, src_max_len), PAD_ID, dtype=torch.long)
-        padded_tgt_ids = torch.full((batch_size, tgt_max_len), PAD_ID, dtype=torch.long)
-        src_mask = torch.zeros((batch_size, src_max_len), dtype=torch.bool)
-        tgt_mask = torch.zeros((batch_size, tgt_max_len), dtype=torch.bool)
-        
-        for i, (src, tgt) in enumerate(zip(src_ids, tgt_ids)):
-            src_length = len(src)
-            tgt_length = len(tgt)
-            padded_src_ids[i, :src_length] = torch.tensor(src, dtype=torch.long)
-            padded_tgt_ids[i, :tgt_length] = torch.tensor(tgt, dtype=torch.long)
-            src_mask[i, :src_length] = True
-            tgt_mask[i, :tgt_length] = True
+        padded_src_ids = pad_sequence(src_ids, batch_first=True, padding_value=PAD_ID)
+        padded_tgt_ids = pad_sequence(tgt_ids, batch_first=True, padding_value=PAD_ID)
+        src_padding_mask = (padded_src_ids != PAD_ID)
+        tgt_padding_mask = (padded_tgt_ids != PAD_ID)
         
         return {
-            "src_ids": padded_src_ids,
-            "src_padding_mask": src_mask,
-            "tgt_ids": padded_tgt_ids,
-            "tgt_padding_mask": tgt_mask
+            "src_ids": padded_src_ids, # (batch_size, src_max_len+1)
+            "src_padding_mask": src_padding_mask, # (batch_size, src_max_len+1)
+            "tgt_ids": padded_tgt_ids, # (batch_size, tgt_max_len+2)
+            "tgt_padding_mask": tgt_padding_mask # (batch_size, tgt_max_len+2)
         }
 
 class TranslationDataset(Dataset):

@@ -3,8 +3,7 @@ from torchmetrics import Accuracy, F1Score
 from configs import BaseConfig
 import sacrebleu
 import torch.nn.functional as F
-
-PAD_ID = 3
+from datasets.translation import PAD_ID
 
 class TranslationMetrics:
     def __init__(self, config: BaseConfig):
