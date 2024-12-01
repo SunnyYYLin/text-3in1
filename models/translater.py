@@ -1,11 +1,16 @@
 import torch
 import torch.nn as nn
-from datasets.translation import PAD_ID, EOS_ID, GO_ID
 from configs import PipelineConfig
 
 class Translater(nn.Module):
     def __init__(self, config: PipelineConfig) -> None:
         super(Translater, self).__init__()
+        self.SRC_PAD_ID = config.SRC_PAD_ID
+        self.TGT_PAD_ID = config.TGT_PAD_ID
+        self.SRC_GO_ID = config.SRC_GO_ID
+        self.TGT_GO_ID = config.TGT_GO_ID
+        self.SRC_EOS_ID = config.SRC_EOS_ID
+        self.TGT_EOS_ID = config.TGT_EOS_ID
         self.src_embedding = nn.Embedding(
             num_embeddings=config.src_vocab_size,
             embedding_dim=config.emb_dim,
@@ -26,7 +31,7 @@ class Translater(nn.Module):
             batch_first=True  # Set batch_first to True for consistency
         )
         self.generator = nn.Linear(config.emb_dim, config.tgt_vocab_size)
-        self.loss_fn = nn.CrossEntropyLoss(ignore_index=PAD_ID)  # Ignore PAD tokens in loss
+        self.loss_fn = nn.CrossEntropyLoss(ignore_index=self.TGT_PAD_ID)  # Ignore PAD tokens in loss
 
     def forward(self, src_ids: torch.LongTensor, 
                 src_padding_mask: torch.BoolTensor=None, 
@@ -99,7 +104,7 @@ class Translater(nn.Module):
         device = src_ids.device
         
         # Initialize target sequence with <GO> token
-        tgt_ids = torch.full((batch_size, 1), GO_ID, dtype=torch.long, device=device)
+        tgt_ids = torch.full((batch_size, 1), self.TGT_GO_ID, dtype=torch.long, device=device)
         
         # Embed source sequences
         src_embs = self.src_embedding(src_ids)  # (batch_size, src_seq_len, emb_dim)
@@ -134,7 +139,7 @@ class Translater(nn.Module):
             tgt_ids = torch.cat([tgt_ids, next_token.unsqueeze(1)], dim=1)  # (batch_size, tgt_seq_len + 1)
             
             # Check if all sequences have generated <EOS>
-            if (next_token == EOS_ID).all():
+            if (next_token == self.TGT_EOS_ID).all():
                 break
         
         return tgt_ids
