@@ -162,6 +162,8 @@ cython_debug/
 #.idea/
 
 *.rar
+*.tar
+*.zip
 logs/
 slurm_logs/
 data/
@@ -171,3 +173,4 @@ checkpoints/
 failed_configs.txt
 temp.txt
 backup/
+zi42STIR

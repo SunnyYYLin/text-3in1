@@ -1,11 +1,21 @@
 import os
 from dataclasses import dataclass, field
 from typing import TypeAlias
+import json
 
 @dataclass
 class TextModelConfig:
     emb_dim: int = 256
     dropout: float = 0.5
+    mlp_dims: str|list[int] = field(default_factory=lambda: [])
+    
+    def __post_init__(self):
+        # Since the `mlp_dims` could be list[int] or a str of list[int]
+        try:
+            self.mlp_dims: list[int] = eval(self.mlp_dims) if isinstance(self.mlp_dims, str) \
+                else self.mlp_dims
+        except:
+            raise ValueError("Invalid mlp_dims format. Please use the format: [size1, size2, ...]")
 
 @dataclass
 class CNNConfig(TextModelConfig):
@@ -14,6 +24,7 @@ class CNNConfig(TextModelConfig):
     dropout: float = 0.5
     
     def __post_init__(self):
+        super().__post_init__()
         # Since the `filter_sizes` and `num_filters` could be list[int] or a str of list[int]
         try:
             self.filter_sizes: list[int] = eval(self.filter_sizes) if isinstance(self.filter_sizes, str) \
@@ -54,6 +65,7 @@ class RNNConfig(TextModelConfig):
     dropout: float = 0.2
     
     def __post_init__(self):
+        super().__post_init__()
         self.rnn_type = self.rnn_type.lower()
     
     def abbr(self) -> str:
@@ -88,6 +100,7 @@ class TransformerConfig(TextModelConfig):
     dropout: float = 0.1
     
     def __post_init__(self):
+        super().__post_init__()
         assert self.emb_dim % self.num_heads == 0, \
             "embedding dim should be divisible by num_heads."
 

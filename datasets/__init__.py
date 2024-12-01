@@ -7,17 +7,17 @@ from configs import BaseConfig
 
 def get_datasets(config: BaseConfig):
     if config.task == 'ner':
-        return NERDataset(config.data_path, 'train'), \
-            NERDataset(config.data_path, 'val'), \
-            NERDataset(config.data_path, 'test')
+        return NERDataset(config, 'train'), \
+            NERDataset(config, 'val'), \
+            NERDataset(config, 'test')
     elif config.task == 'sentiment':
-        return SentimentDataset(config.data_path, 'train'), \
-            SentimentDataset(config.data_path, 'val'), \
-            SentimentDataset(config.data_path, 'test')
+        return SentimentDataset(config, 'train'), \
+            SentimentDataset(config, 'val'), \
+            SentimentDataset(config, 'test')
     elif config.task == 'translation':
-        return TranslationDataset(config.data_path, 'train'), \
-            TranslationDataset(config.data_path, 'val'), \
-            TranslationDataset(config.data_path, 'test')
+        return TranslationDataset(config, 'train'), \
+            TranslationDataset(config, 'val'), \
+            TranslationDataset(config, 'test')
     else:
         raise NotImplementedError(f"Unsupported task: {config.task}")
     

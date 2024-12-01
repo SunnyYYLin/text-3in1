@@ -9,12 +9,12 @@ class Translater(nn.Module):
         self.src_embedding = nn.Embedding(
             num_embeddings=config.src_vocab_size,
             embedding_dim=config.emb_dim,
-            padding_idx=PAD_ID
+            padding_idx=config.SRC_PAD_ID
         )
         self.tgt_embedding = nn.Embedding(
             num_embeddings=config.tgt_vocab_size,
             embedding_dim=config.emb_dim,
-            padding_idx=PAD_ID
+            padding_idx=config.TGT_PAD_ID
         )
         self.backbone = nn.Transformer(
             d_model=config.emb_dim,

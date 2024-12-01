@@ -3,20 +3,24 @@ import torch.nn as nn
 from configs import PipelineConfig
 from .backbone import get_backbone
 
-PAD_ID = 8019
-
 class SentimentModel(nn.Module):
     def __init__(self, config: PipelineConfig) -> None:
         super(SentimentModel, self).__init__()
         model_cls = get_backbone(config.model)
         print(config.emb_dim)
         self.embedding = nn.Embedding(
-            num_embeddings=config.vocab_size + 1,
+            num_embeddings=config.vocab_size + 2,
             embedding_dim=config.emb_dim,
-            padding_idx=8019
+            padding_idx=config.PAD_ID
         )
         self.backbone = model_cls(config)
-        self.classifier = nn.LazyLinear(config.num_classes)
+        sizes = config.mlp_dims + [config.num_classes]
+        mlp_layers = [nn.LazyLinear(out_features=size) for size in sizes]
+        activations = [nn.ReLU() for _ in range(len(mlp_layers) - 1)] + [nn.Identity()]
+        dropouts = [nn.Dropout(p=config.dropout) for _ in range(len(mlp_layers) - 1)] + [nn.Identity()]
+        self.classifier = nn.Sequential(*[
+            layer for layers in zip(mlp_layers, activations, dropouts) for layer in layers
+        ])
         self.loss = nn.CrossEntropyLoss()
         self._init_lazy()
         

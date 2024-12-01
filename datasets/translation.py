@@ -4,11 +4,16 @@ import torch
 from torch.utils.data import Dataset
 from torch.nn.utils.rnn import pad_sequence
 from transformers.data.data_collator import DataCollatorMixin
+from configs import PipelineConfig
 
-EOS_ID = 0
-GO_ID = 1
-UNK_ID = 2
-PAD_ID = 3
+SRC_EOS = '<EOS>'
+SRC_GO = '<GO>'
+SRC_UNK = '<UNK>'
+SRC_PAD = '<PAD>'
+TGT_EOS = '<EOS>'
+TGT_GO = '<GO>'
+TGT_UNK = '<UNK>'
+TGT_PAD = '<PAD>'
 TOKEN_IDENTIFIER = '@@'
     
 class TranslationDataCollator(DataCollatorMixin):
@@ -31,21 +36,55 @@ class TranslationDataCollator(DataCollatorMixin):
         }
 
 class TranslationDataset(Dataset):
-    def __init__(self, path: str, part: str):
-        zh_path = os.path.join(path, f'{part}.zh')
-        en_path = os.path.join(path, f'{part}.en')
-        zh_vocab_path = os.path.join(path, f'train.zh.json')
-        en_vocab_path = os.path.join(path, f'train.en.json')
-        with open(zh_vocab_path, 'r', encoding='utf-8') as f:
-            self.zh_vocab: dict[str, int] = json.load(f)
-        with open(en_vocab_path, 'r', encoding='utf-8') as f:
-            self.en_vocab: dict[str, int] = json.load(f)
-        self.zh_id2token = {v: k for k, v in self.zh_vocab.items()}
-        self.zh_token2id = self.zh_vocab
-        self.en_id2token = {v: k for k, v in self.en_vocab.items()}
-        self.en_token2id = self.en_vocab
-        self.tgt_texts = self.load_data(zh_path)
-        self.src_texts = self.load_data(en_path)
+    def __init__(self, config: PipelineConfig, part: str):
+        path = config.data_path
+        src_path = path / f'{part}.{config.src_lang}'
+        tgt_path = path / f'{part}.{config.tgt_lang}'
+        src_vocab_path = path / f'train.{config.src_lang}.json'
+        tgt_vocab_path = path / f'train.{config.tgt_lang}.json'
+        with open(src_vocab_path, 'r', encoding='utf-8') as f:
+            self.src_vocab: dict[str, int] = json.load(f)
+        with open(tgt_vocab_path, 'r', encoding='utf-8') as f:
+            self.tgt_vocab: dict[str, int] = json.load(f)
+            
+        global SRC_EOS_ID
+        global SRC_GO_ID
+        global SRC_UNK_ID
+        global SRC_PAD_ID
+        global TGT_EOS_ID
+        global TGT_GO_ID
+        global TGT_UNK_ID
+        global TGT_PAD_ID
+        SRC_EOS_ID = self.src_vocab[SRC_EOS]
+        SRC_GO_ID = self.src_vocab[SRC_GO]
+        SRC_UNK_ID = self.src_vocab[SRC_UNK]
+        SRC_PAD_ID = self.src_vocab[SRC_PAD]
+        TGT_EOS_ID = self.tgt_vocab[TGT_EOS]
+        TGT_GO_ID = self.tgt_vocab[TGT_GO]
+        TGT_UNK_ID = self.tgt_vocab[TGT_UNK]
+        TGT_PAD_ID = self.tgt_vocab[TGT_PAD]
+        config.SRC_EOS_ID = SRC_EOS_ID
+        config.SRC_GO_ID = SRC_GO_ID
+        config.SRC_UNK_ID = SRC_UNK_ID
+        config.SRC_PAD_ID = SRC_PAD_ID
+        config.TGT_EOS_ID = TGT_EOS_ID
+        config.TGT_GO_ID = TGT_GO_ID
+        config.TGT_UNK_ID = TGT_UNK_ID
+        config.TGT_PAD_ID = TGT_PAD_ID
+        config.src_vocab_size = len(self.src_vocab)
+        config.tgt_vocab_size = len(self.tgt_vocab)
+            
+        self.src_id2token = {v: k for k, v in self.src_vocab.items()}
+        self.src_token2id = self.src_vocab
+        self.tgt_id2token = {v: k for k, v in self.tgt_vocab.items()}
+        self.tgt_token2id = self.tgt_vocab
+        self.tgt_texts = self.load_data(tgt_path)
+        self.src_texts = self.load_data(src_path)
+        config.src_vocab_size = len(self.src_vocab)
+        config.tgt_vocab_size = len(self.tgt_vocab)
+        print(f"Loaded {len(self.src_texts)} source samples from {src_path}.")
+        print(f"Loaded {len(self.tgt_texts)} target samples from {tgt_path}.")
+        print(f"Source vocab size: {config.src_vocab_size}, Target vocab size: {config.tgt_vocab_size}")
         assert len(self.src_texts) == len(self.tgt_texts), "Mismatched source and target lengths."
         
     def load_data(self, data_path: str) -> list[str]:
@@ -61,8 +100,8 @@ class TranslationDataset(Dataset):
         src_text = self.src_texts[idx]
         tgt_text = self.tgt_texts[idx]
         
-        src_ids = [self.en_vocab.get(token, UNK_ID) for token in src_text]
-        tgt_ids = [self.zh_vocab.get(token, UNK_ID) for token in tgt_text]
+        src_ids = [self.src_vocab.get(token, SRC_UNK_ID) for token in src_text]
+        tgt_ids = [self.tgt_vocab.get(token, TGT_UNK_ID) for token in tgt_text]
         
         return {
             "src_ids": src_ids,
@@ -70,11 +109,11 @@ class TranslationDataset(Dataset):
         }
         
     def decode_src(self, ids: torch.LongTensor, attn_mask: torch.BoolTensor) -> str:
-        text = " ".join(self.en_id2token[id.item()] for id, mask in zip(ids, attn_mask) if mask)
+        text = " ".join(self.src_id2token[id.item()] for id, mask in zip(ids, attn_mask) if mask)
         return text.replace(TOKEN_IDENTIFIER+' ', '')
     
     def decode_tgt(self, ids: torch.LongTensor, attn_mask: torch.BoolTensor) -> str:
-        text = "".join(self.zh_id2token[id.item()] for id, mask in zip(ids, attn_mask) if mask)
+        text = "".join(self.tgt_id2token[id.item()] for id, mask in zip(ids, attn_mask) if mask)
         return text.replace(TOKEN_IDENTIFIER, '')
 
 if __name__ == "__main__":

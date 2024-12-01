@@ -5,13 +5,11 @@ from metrics import get_metrics
 from transformers.trainer import Trainer
 from transformers.trainer_callback import EarlyStoppingCallback
 from utils.examples import get_examples
-import random
 
 if __name__ == '__main__':
     # reading config
     parser = ConfigParser()
     config = parser.parse_config()
-    print(config)
     
     # prepare for training
     ## data
@@ -22,6 +20,7 @@ if __name__ == '__main__':
     collator = get_collators(config)
     ## model
     model = get_model(config)
+    print(config)
     ## trainer
     train_args = config.train_args()
     metrics = get_metrics(config) 

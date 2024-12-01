@@ -33,8 +33,8 @@ class BERT(nn.Module):
                     src_key_padding_mask=attention_mask
                 ) # (batch_size, seq_len, emb_dim)
         
-        if self.only_one:
-            output = output.max(dim=1).values  # (batch_size, emb_dim)
+        if self.only_one: # only first for [CLS] token
+            output = output[:, 0, :]
         
         return output
     
