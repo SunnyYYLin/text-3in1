@@ -4,7 +4,6 @@ import torch
 from torch.utils.data import Dataset
 from torch.nn.utils.rnn import pad_sequence
 from transformers.data.data_collator import DataCollatorMixin
-from configs import PipelineConfig
 
 SRC_EOS = '<EOS>'
 SRC_GO = '<GO>'
@@ -19,14 +18,14 @@ TOKEN_IDENTIFIER = '@@'
 class TranslationDataCollator(DataCollatorMixin):
     """封装了自定义的 collate_fn, 用于 Hugging Face 的 Trainer。"""
     def __call__(self, features: list[dict[str, list[int]]]) -> dict[str, torch.Tensor]:
-        src_ids = [torch.tensor(f["src_ids"]+[EOS_ID], dtype=torch.long) for f in features]
-        tgt_ids = [torch.tensor([GO_ID]+f["tgt_ids"]+[EOS_ID], dtype=torch.long) for f in features]
+        src_ids = [torch.tensor(f["src_ids"]+[SRC_EOS_ID], dtype=torch.long) for f in features]
+        tgt_ids = [torch.tensor([TGT_GO_ID]+f["tgt_ids"]+[TGT_EOS_ID], dtype=torch.long) for f in features]
         assert len(src_ids) == len(tgt_ids), "Mismatched source and target batch sizes."
         
-        padded_src_ids = pad_sequence(src_ids, batch_first=True, padding_value=PAD_ID)
-        padded_tgt_ids = pad_sequence(tgt_ids, batch_first=True, padding_value=PAD_ID)
-        src_padding_mask = (padded_src_ids != PAD_ID)
-        tgt_padding_mask = (padded_tgt_ids != PAD_ID)
+        padded_src_ids = pad_sequence(src_ids, batch_first=True, padding_value=SRC_PAD_ID)
+        padded_tgt_ids = pad_sequence(tgt_ids, batch_first=True, padding_value=TGT_PAD_ID)
+        src_padding_mask = (padded_src_ids != SRC_PAD_ID)
+        tgt_padding_mask = (padded_tgt_ids != TGT_PAD_ID)
         
         return {
             "src_ids": padded_src_ids, # (batch_size, src_max_len+1)
@@ -36,7 +35,7 @@ class TranslationDataCollator(DataCollatorMixin):
         }
 
 class TranslationDataset(Dataset):
-    def __init__(self, config: PipelineConfig, part: str):
+    def __init__(self, config, part: str):
         path = config.data_path
         src_path = path / f'{part}.{config.src_lang}'
         tgt_path = path / f'{part}.{config.tgt_lang}'

@@ -1,5 +1,5 @@
 from models import get_model
-from datasets import get_datasets, get_collators
+from data_utils import get_datasets, get_collators
 from metrics import get_metrics
 from transformers.trainer import Trainer
 from transformers.trainer_callback import EarlyStoppingCallback

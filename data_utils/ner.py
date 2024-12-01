@@ -1,7 +1,6 @@
 import json
 import os
 import torch
-from configs import PipelineConfig
 from torch.utils.data import Dataset
 from torch.nn.utils.rnn import pad_sequence
 from transformers.data.data_collator import DataCollatorMixin
@@ -26,7 +25,7 @@ class NERDataCollator(DataCollatorMixin):
         }
 
 class NERDataset(Dataset):
-    def __init__(self, config: PipelineConfig, part: str):
+    def __init__(self, config, part: str):
         # 加载数据和词汇表
         path = config.data_path
         data_path = os.path.join(path, f'{part}.txt')

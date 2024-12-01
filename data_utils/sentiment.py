@@ -4,7 +4,6 @@ import torch
 from torch.utils.data import Dataset
 from torch.nn.utils.rnn import pad_sequence
 from transformers.data.data_collator import DataCollatorMixin
-from configs import PipelineConfig
 
 UNK = 'UNK'
 PAD = '[PAD]'
@@ -26,7 +25,7 @@ class SentimentDataCollator(DataCollatorMixin):
         return collate_fn(features)
 
 class SentimentDataset(Dataset):
-    def __init__(self, config: PipelineConfig, part: str) -> None:
+    def __init__(self, config, part: str) -> None:
         path = config.data_path
         vocab_path = os.path.join(path, 'vocab.json')
         data_path = os.path.join(path, f'{part}.jsonl')

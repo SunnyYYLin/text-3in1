@@ -3,9 +3,8 @@ import json
 from .ner import NERDataset, NERDataCollator
 from .sentiment import SentimentDataset, SentimentDataCollator
 from .translation import TranslationDataset, TranslationDataCollator
-from configs import BaseConfig
 
-def get_datasets(config: BaseConfig):
+def get_datasets(config):
     if config.task == 'ner':
         return NERDataset(config, 'train'), \
             NERDataset(config, 'val'), \
@@ -21,7 +20,7 @@ def get_datasets(config: BaseConfig):
     else:
         raise NotImplementedError(f"Unsupported task: {config.task}")
     
-def get_collators(config: BaseConfig):
+def get_collators(config):
     match config.task:
         case 'ner':
             return NERDataCollator()

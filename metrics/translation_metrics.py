@@ -3,14 +3,13 @@ from torchmetrics import Accuracy, F1Score
 from configs import BaseConfig
 import sacrebleu
 import torch.nn.functional as F
-from datasets.translation import PAD_ID
 
 class TranslationMetrics:
     def __init__(self, config: BaseConfig):
         self.accuracy_metric = Accuracy(task="multiclass", 
-            num_classes=config.tgt_vocab_size, ignore_index=PAD_ID).to(config.device)
+            num_classes=config.tgt_vocab_size, ignore_index=config.TGT_PAD_ID).to(config.device)
         self.f1_metric = F1Score(task="multiclass", 
-            num_classes=config.tgt_vocab_size, ignore_index=PAD_ID).to(config.device)
+            num_classes=config.tgt_vocab_size, ignore_index=config.TGT_PAD_ID).to(config.device)
     
     def compute_bleu(self, preds, refs):
         preds = [" ".join(map(str, pred)) for pred in preds]  # 将预测序列转为字符串
@@ -43,9 +42,9 @@ class TranslationMetrics:
 class WordLevelMetrics:
     def __init__(self, config: BaseConfig):
         self.accuracy_metric = Accuracy(task="multiclass", 
-            num_classes=config.tgt_vocab_size, ignore_index=PAD_ID).to(config.device)
+            num_classes=config.tgt_vocab_size, ignore_index=config.TGT_PAD_ID).to(config.device)
         self.f1_metric = F1Score(task="multiclass", 
-            num_classes=config.tgt_vocab_size, ignore_index=PAD_ID).to(config.device)
+            num_classes=config.tgt_vocab_size, ignore_index=config.TGT_PAD_ID).to(config.device)
 
     def compute(self, preds, labels, mask):
         filtered_preds = preds[mask]
