@@ -17,7 +17,7 @@ class NERDataCollator(DataCollatorMixin):
 
         padded_input_ids = pad_sequence(input_ids, batch_first=True, padding_value=PAD_ID)
         attention_mask = (padded_input_ids != PAD_ID)
-        labels = pad_sequence(labels, batch_first=True, padding_value=O_ID)      
+        labels = pad_sequence(labels, batch_first=True, padding_value=PAD_TAG_ID)      
 
         return {
             "input_ids": padded_input_ids,
