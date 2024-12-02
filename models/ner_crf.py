@@ -7,7 +7,7 @@ from .backbone import get_backbone
 class NER_CRF(nn.Module):
     def __init__(self, config: PipelineConfig) -> None:
         super(NER_CRF, self).__init__()
-        model_cls = get_backbone(config.model)
+        model_cls = get_backbone(config)
         self.embedding = nn.Embedding(
             num_embeddings=config.vocab_size,
             embedding_dim=config.emb_dim,

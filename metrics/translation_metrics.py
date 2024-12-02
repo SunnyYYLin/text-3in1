@@ -22,7 +22,7 @@ class TranslationMetrics:
         logits = torch.tensor(pred.predictions)  # (batch_size, seq_len, vocab_size)
         preds = torch.argmax(logits, dim=-1)  # (batch_size, seq_len)
 
-        mask = (labels != PAD_ID)
+        mask = (labels != self.PAD_ID)
         filtered_preds = preds[mask]
         filtered_labels = labels[mask]
 

@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from configs import PipelineConfig
+from .backbone import get_backbone
 
 class Translater(nn.Module):
     def __init__(self, config: PipelineConfig) -> None:
@@ -11,6 +12,7 @@ class Translater(nn.Module):
         self.TGT_GO_ID = config.TGT_GO_ID
         self.SRC_EOS_ID = config.SRC_EOS_ID
         self.TGT_EOS_ID = config.TGT_EOS_ID
+        backbone_cls = get_backbone(config)
         self.src_embedding = nn.Embedding(
             num_embeddings=config.src_vocab_size,
             embedding_dim=config.emb_dim,
@@ -21,15 +23,7 @@ class Translater(nn.Module):
             embedding_dim=config.emb_dim,
             padding_idx=config.TGT_PAD_ID
         )
-        self.backbone = nn.Transformer(
-            d_model=config.emb_dim,
-            nhead=config.num_heads,
-            num_encoder_layers=config.num_layers,
-            num_decoder_layers=config.num_layers,
-            dim_feedforward=config.ffn_size,
-            dropout=config.dropout,
-            batch_first=True  # Set batch_first to True for consistency
-        )
+        self.backbone = backbone_cls(config)
         self.generator = nn.Linear(config.emb_dim, config.tgt_vocab_size)
         self.loss_fn = nn.CrossEntropyLoss(ignore_index=self.TGT_PAD_ID)  # Ignore PAD tokens in loss
 
@@ -70,8 +64,7 @@ class Translater(nn.Module):
             src_mask=src_mask,
             tgt_mask=tgt_mask,
             src_key_padding_mask=src_padding_mask,
-            tgt_key_padding_mask=tgt_padding_mask,
-            memory_key_padding_mask=src_padding_mask
+            tgt_key_padding_mask=tgt_padding_mask
         )  # (batch_size, tgt_seq_len-1, emb_dim)
         
         # Generate logits

@@ -4,9 +4,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from configs.model_config import TransformerConfig
 
-class BERT(nn.Module):
+class Encoder(nn.Module):
     def __init__(self, config: TransformerConfig) -> None:
-        super(BERT, self).__init__()
+        super(Encoder, self).__init__()
         self.only_one = config.only_one
         self.pos_encoder = PositionalEncoding(
             d_model=config.emb_dim

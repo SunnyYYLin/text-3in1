@@ -6,8 +6,7 @@ from .backbone import get_backbone
 class SentimentModel(nn.Module):
     def __init__(self, config: PipelineConfig) -> None:
         super(SentimentModel, self).__init__()
-        model_cls = get_backbone(config.model)
-        print(config.emb_dim)
+        model_cls = get_backbone(config)
         self.embedding = nn.Embedding(
             num_embeddings=config.vocab_size + 2,
             embedding_dim=config.emb_dim,

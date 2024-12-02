@@ -115,22 +115,22 @@ class TranslationDataset(Dataset):
         text = "".join(self.tgt_id2token[id.item()] for id, mask in zip(ids, attn_mask) if mask)
         return text.replace(TOKEN_IDENTIFIER, '')
 
-if __name__ == "__main__":
-    dataset = TranslationDataset(path="data/translation", part="train")
-    print("Dataset size:", len(dataset))
-    for i in range(3):
-        sample = dataset[i]
-        print(f"Sample {i}:")
-        print("Original Source Text:", " ".join(dataset.src_texts[i]))
-        print("Original Target Text:", " ".join(dataset.tgt_texts[i]))
-        print("Input IDs:", sample["src_ids"])
-        print("Labels:", sample["tgt_ids"])
+# if __name__ == "__main__":
+#     dataset = TranslationDataset(path="data/translation", part="train")
+#     print("Dataset size:", len(dataset))
+#     for i in range(3):
+#         sample = dataset[i]
+#         print(f"Sample {i}:")
+#         print("Original Source Text:", " ".join(dataset.src_texts[i]))
+#         print("Original Target Text:", " ".join(dataset.tgt_texts[i]))
+#         print("Input IDs:", sample["src_ids"])
+#         print("Labels:", sample["tgt_ids"])
     
-    collator = TranslationDataCollator()
-    batch = [dataset[i] for i in range(3)]
-    collated_batch = collator(batch)
-    print("Collated batch:")
-    print("Input IDs:", collated_batch["src_ids"])
-    print("Attention Mask:", collated_batch["src_mask"])
-    print("Labels:", collated_batch["tgt_ids"])
-    print("Target Attention Mask:", collated_batch["tgt_mask"])
+#     collator = TranslationDataCollator()
+#     batch = [dataset[i] for i in range(3)]
+#     collated_batch = collator(batch)
+#     print("Collated batch:")
+#     print("Input IDs:", collated_batch["src_ids"])
+#     print("Attention Mask:", collated_batch["src_mask"])
+#     print("Labels:", collated_batch["tgt_ids"])
+#     print("Target Attention Mask:", collated_batch["tgt_mask"])
