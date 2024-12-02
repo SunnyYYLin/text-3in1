@@ -6,6 +6,7 @@ import torch.nn.functional as F
 
 class TranslationMetrics:
     def __init__(self, config: BaseConfig):
+        self.TGT_PAD_ID = config.TGT_PAD_ID
         self.accuracy_metric = Accuracy(task="multiclass", 
             num_classes=config.tgt_vocab_size, ignore_index=config.TGT_PAD_ID).to(config.device)
         self.f1_metric = F1Score(task="multiclass", 
@@ -18,11 +19,11 @@ class TranslationMetrics:
         return bleu.score
 
     def __call__(self, pred):
-        labels = torch.tensor(pred.label_ids)  # (batch_size, seq_len)
+        labels = torch.tensor(pred.label_ids)[:, 1:]  # (batch_size, seq_len)
         logits = torch.tensor(pred.predictions)  # (batch_size, seq_len, vocab_size)
         preds = torch.argmax(logits, dim=-1)  # (batch_size, seq_len)
 
-        mask = (labels != PAD_ID)
+        mask = (labels != self.TGT_PAD_ID)
         filtered_preds = preds[mask]
         filtered_labels = labels[mask]
 

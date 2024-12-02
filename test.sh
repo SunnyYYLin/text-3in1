@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=text3in1
-#SBATCH --gpus=1
+#SBATCH --gpus=2
 #SBATCH --output=slurm_logs/%j.log
 
 module purge
