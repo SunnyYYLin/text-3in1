@@ -47,5 +47,9 @@ if __name__ == '__main__':
         case 'example':
             examples = get_examples(trainer.model, test_dataset, config)
             print(examples)
+            # src_words = "I love you"
+            # src_ids = {"input_ids": [train_dataset.src_vocab[word] for word in src_words.split()]}
+            # input_dict = collator([src_ids])
+            # output = model.generate(**input_dict)
         case _:
             raise NotImplementedError(f"Mode {config.mode} not implemented")

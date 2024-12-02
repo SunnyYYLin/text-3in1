@@ -29,22 +29,22 @@ def test_translation_transformer():
     transformer_configs_list = [
         # 基础配置，低计算成本
         TransformerConfig(emb_dim=256, ffn_size=1024, num_heads=4, num_layers=2, dropout=0.1),
-        TransformerConfig(emb_dim=256, ffn_size=1024, num_heads=4, num_layers=4, dropout=0.2),
+        TransformerConfig(emb_dim=256, ffn_size=1024, num_heads=4, num_layers=4, dropout=0.1),
         
         # 增加模型深度，提高表达能力
         TransformerConfig(emb_dim=256, ffn_size=2048, num_heads=4, num_layers=6, dropout=0.1),
-        TransformerConfig(emb_dim=256, ffn_size=2048, num_heads=4, num_layers=6, dropout=0.3),
+        TransformerConfig(emb_dim=256, ffn_size=2048, num_heads=4, num_layers=6, dropout=0.1),
         
         # 使用较大嵌入维度
         TransformerConfig(emb_dim=512, ffn_size=1024, num_heads=8, num_layers=4, dropout=0.1),
-        TransformerConfig(emb_dim=512, ffn_size=2048, num_heads=8, num_layers=4, dropout=0.3),
+        TransformerConfig(emb_dim=512, ffn_size=2048, num_heads=8, num_layers=4, dropout=0.1),
         
         # 更高的模型深度和参数
         TransformerConfig(emb_dim=512, ffn_size=2048, num_heads=8, num_layers=6, dropout=0.1),
-        TransformerConfig(emb_dim=512, ffn_size=2048, num_heads=8, num_layers=6, dropout=0.3),
+        TransformerConfig(emb_dim=512, ffn_size=2048, num_heads=8, num_layers=6, dropout=0.1),
         
         # 极简配置，用于基线测试
-        TransformerConfig(emb_dim=256, ffn_size=1024, num_heads=4, num_layers=2, dropout=0.3),
+        TransformerConfig(emb_dim=256, ffn_size=1024, num_heads=4, num_layers=2, dropout=0.2),
         
         # 尽量大参数配置，用于高资源环境测试
         TransformerConfig(emb_dim=512, ffn_size=2048, num_heads=8, num_layers=6, dropout=0.1),
@@ -63,17 +63,17 @@ def test_translation_transformer():
             train_args = config.train_args()
             metrics = get_metrics(config)
             model = get_model(config)
-            early_stopping = EarlyStoppingCallback(
-                early_stopping_patience=6,
-                early_stopping_threshold=0.001 # 指标变化阈值
-            )
+            # early_stopping = EarlyStoppingCallback(
+            #     early_stopping_patience=6,
+            #     early_stopping_threshold=0.001 # 指标变化阈值
+            # )
             trainer = Trainer(model=model, 
                             args=train_args, 
                             train_dataset=train_dataset, 
                             eval_dataset=val_dataset, 
                             data_collator=collator,
                             compute_metrics=metrics,
-                            callbacks=[early_stopping]
+                            # callbacks=[early_stopping]
                             )
             trainer.label_names = config.label_names
             trainer.train()
