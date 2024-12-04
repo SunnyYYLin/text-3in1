@@ -121,7 +121,7 @@ class TranslationDataset(Dataset):
                 if keep_token:
                     return text
                 else:
-                    return text.replace(TOKEN_IDENTIFIER+' ', '')
+                    return text.replace(TOKEN_IDENTIFIER, '')
             case 2:
                 return [self.decode_src(id, keep_token=keep_token) for id in ids]
             case _:
@@ -136,7 +136,7 @@ class TranslationDataset(Dataset):
                 text = text[:end]
                 if keep_token:
                     return text
-                return text.replace(TOKEN_IDENTIFIER+' ', '')
+                return text.replace(TOKEN_IDENTIFIER, '')
             case 2:
                 return [self.decode_tgt(id, keep_token=keep_token) for id in ids]
             case _:

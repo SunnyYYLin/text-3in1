@@ -2,8 +2,11 @@ import torch
 from torchmetrics import Accuracy, F1Score
 from configs import BaseConfig
 import sacrebleu
+from pathlib import Path
 import torch.nn.functional as F
 from data_utils.translation import TranslationDataset
+from time import time
+import json
 
 class TranslationMetrics:
     def __init__(self, config: BaseConfig):
@@ -15,9 +18,11 @@ class TranslationMetrics:
         self.dataset = TranslationDataset(config, 'test')
     
     def compute_bleu(self, hypos: torch.Tensor, refs: torch.Tensor):
-        hypos = self.dataset.decode_tgt(hypos, keep_token=True)
-        refs = self.dataset.decode_tgt(refs, keep_token=True)
+        hypos = self.dataset.decode_tgt(hypos, keep_token=False)
+        refs = self.dataset.decode_tgt(refs, keep_token=False)
         bleu = sacrebleu.corpus_bleu(hypos, [refs])
+        with open(Path(__file__).parent.parent/'temps'/f'{time()}.json', 'w', encoding='utf-8') as f:
+            json.dump([{'hypo': hypo, 'ref': ref, 'bleu': bleu.score} for hypo, ref in zip(hypos, refs)], f, ensure_ascii=False, indent=4)
         return bleu.score
 
     def __call__(self, pred):
