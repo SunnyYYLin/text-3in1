@@ -27,21 +27,25 @@ def test_sentiment_cnn():
     )
     task_config = SentimentTaskConfig()
     model_configs_list = [
+        CNNConfig(emb_dim=256, dropout=0.3, filter_sizes=[2], num_filters=[12]),
+        CNNConfig(emb_dim=256, dropout=0.3, filter_sizes=[3], num_filters=[12]),
+        CNNConfig(emb_dim=256, dropout=0.3, filter_sizes=[4], num_filters=[12]),
+        CNNConfig(emb_dim=256, dropout=0.3, filter_sizes=[5], num_filters=[12]),
         # 轻量配置
-        CNNConfig(emb_dim=128, dropout=0.3, filter_sizes=[2, 3, 4], num_filters=[2, 2, 2]),
-        CNNConfig(emb_dim=128, dropout=0.3, filter_sizes=[3, 4, 5], num_filters=[2, 2, 2]),
+        # CNNConfig(emb_dim=128, dropout=0.3, filter_sizes=[2, 3, 4], num_filters=[2, 2, 2]),
+        # CNNConfig(emb_dim=128, dropout=0.3, filter_sizes=[3, 4, 5], num_filters=[2, 2, 2]),
         
-        # 标准配置，适合大多数场景
-        CNNConfig(emb_dim=256, dropout=0.3, filter_sizes=[2, 3, 4], num_filters=[4, 4, 4]),
-        CNNConfig(emb_dim=256, dropout=0.3, filter_sizes=[3, 4, 5], num_filters=[4, 4, 4]),
+        # # 标准配置，适合大多数场景
+        # CNNConfig(emb_dim=256, dropout=0.3, filter_sizes=[2, 3, 4], num_filters=[4, 4, 4]),
+        # CNNConfig(emb_dim=256, dropout=0.3, filter_sizes=[3, 4, 5], num_filters=[4, 4, 4]),
         
-        # 增强配置，增加过滤器数量和更高的 dropout
-        CNNConfig(emb_dim=256, dropout=0.5, filter_sizes=[2, 3, 4], num_filters=[8, 8, 8]),
-        CNNConfig(emb_dim=256, dropout=0.5, filter_sizes=[3, 4, 5], num_filters=[8, 8, 8]),
+        # # 增强配置，增加过滤器数量和更高的 dropout
+        # CNNConfig(emb_dim=256, dropout=0.5, filter_sizes=[2, 3, 4], num_filters=[8, 8, 8]),
+        # CNNConfig(emb_dim=256, dropout=0.5, filter_sizes=[3, 4, 5], num_filters=[8, 8, 8]),
         
-        # 更强特征提取配置，适合高资源场景
-        CNNConfig(emb_dim=256, dropout=0.5, filter_sizes=[2, 3, 4, 5], num_filters=[4, 4, 4, 4]),
-        CNNConfig(emb_dim=256, dropout=0.5, filter_sizes=[2, 3, 4, 5], num_filters=[8, 8, 8, 8]),
+        # # 更强特征提取配置，适合高资源场景
+        # CNNConfig(emb_dim=256, dropout=0.5, filter_sizes=[2, 3, 4, 5], num_filters=[4, 4, 4, 4]),
+        # CNNConfig(emb_dim=256, dropout=0.5, filter_sizes=[2, 3, 4, 5], num_filters=[8, 8, 8, 8]),
     ]
 
     # 将每组配置组合到 PipelineConfig 中

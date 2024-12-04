@@ -69,4 +69,6 @@ class PipelineConfig:
             disable_tqdm=not self.verbose,  # 是否禁用进度条
             no_cuda=(self.device!='cuda'),  # 是否禁用 CUDA
             max_grad_norm=self.grad_clip,  # 梯度裁剪阈值
+            metric_for_best_model=self.task_config.metric_for_best_model,
+            greater_is_better=self.task_config.greater_is_better,
         )

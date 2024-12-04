@@ -96,6 +96,8 @@ class TranslationDataset(Dataset):
         return len(self.src_texts)
     
     def __getitem__(self, idx):
+        if isinstance(idx, slice):
+            return [self[i] for i in range(*idx.indices(len(self)))]
         src_text = self.src_texts[idx]
         tgt_text = self.tgt_texts[idx]
         
@@ -107,13 +109,38 @@ class TranslationDataset(Dataset):
             "tgt_ids": tgt_ids
         }
         
-    def decode_src(self, ids: torch.LongTensor, attn_mask: torch.BoolTensor) -> str:
-        text = " ".join(self.src_id2token[id.item()] for id, mask in zip(ids, attn_mask) if mask)
-        return text.replace(TOKEN_IDENTIFIER+' ', '')
+    def decode_src(self, ids: torch.LongTensor, keep_token=False, keep_GO=True):
+        match ids.ndim:
+            case 1:
+                text = " ".join(self.src_id2token[id.item()] for id in ids 
+                                if id != SRC_PAD_ID and id != -100)
+                if not keep_GO:
+                    text = text.replace(SRC_GO, '')
+                end = text.find(SRC_EOS)
+                text = text[:end]
+                if keep_token:
+                    return text
+                else:
+                    return text.replace(TOKEN_IDENTIFIER+' ', '')
+            case 2:
+                return [self.decode_src(id, keep_token=keep_token) for id in ids]
+            case _:
+                raise ValueError("Input tensor must have 1 or 2 dimensions.")
     
-    def decode_tgt(self, ids: torch.LongTensor, attn_mask: torch.BoolTensor) -> str:
-        text = "".join(self.tgt_id2token[id.item()] for id, mask in zip(ids, attn_mask) if mask)
-        return text.replace(TOKEN_IDENTIFIER, '')
+    def decode_tgt(self, ids: torch.LongTensor, keep_token=False):
+        match ids.ndim:
+            case 1:
+                text = " ".join(self.tgt_id2token[id.item()] for id in ids 
+                                if id != TGT_PAD_ID and id != -100)
+                end = text.find(TGT_EOS)
+                text = text[:end]
+                if keep_token:
+                    return text
+                return text.replace(TOKEN_IDENTIFIER+' ', '')
+            case 2:
+                return [self.decode_tgt(id, keep_token=keep_token) for id in ids]
+            case _:
+                raise ValueError("Input tensor must have 1 or 2 dimensions.")
 
 # if __name__ == "__main__":
 #     dataset = TranslationDataset(path="data/translation", part="train")

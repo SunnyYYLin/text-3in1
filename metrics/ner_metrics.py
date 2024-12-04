@@ -43,7 +43,7 @@ class NERMetrics:
         start = None
 
         for idx, tag in enumerate(tags):
-            if tag == "O":
+            if tag == "O" or tag == 'P':
                 if type is not None:
                     entities.append(NamedEntity(start=start, end=idx, type=type))
                     type = None
@@ -75,6 +75,21 @@ class NERMetrics:
             list[str]: 标签列表。
         """
         return [self.id2tag.get(idx, "O") for idx in idxs]
+    
+    def extract_entities(self, sentence: str, tags: str) -> list[str]:
+        """
+        从句子和标签中提取实体。
+
+        Args:
+            sentence (str): 句子。
+            tags (str): 标签序列。
+
+        Returns:
+            list[NamedEntity]: 实体列表。
+        """
+        tags = tags.split()
+        entities = self.tags2entities(tags)
+        return [sentence[entity.start:entity.end] for entity in entities]
 
     def __call__(self, pred):
         """

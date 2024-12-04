@@ -78,6 +78,8 @@ class NERDataset(Dataset):
     
     def __getitem__(self, index: int):
         """根据索引获取句子及其标签，并将它们转换为 ID。"""
+        if isinstance(index, slice):
+            return [self[i] for i in range(*index.indices(len(self)))]
         sample = self.data[index]
         char_ids = [self.chr_vocab[char] for char in sample["sentence"]]
         tag_ids = [self.tag_vocab[tag] for tag in sample["tags"]]
@@ -87,7 +89,7 @@ class NERDataset(Dataset):
         }
 
     def decode_input(self, input_ids: torch.LongTensor) -> str:
-        return ' '.join([self.chr_id2token[idx] for idx in input_ids.tolist() if idx != PAD_ID])
+        return ''.join([self.chr_id2token[idx] for idx in input_ids.tolist() if idx != PAD_ID])
     
     def decode_label(self, label_ids: torch.LongTensor, attn_mask: torch.BoolTensor) -> str:
         return ' '.join([self.tag_id2token[idx] for idx, mask in zip(label_ids.tolist(), attn_mask.tolist()) if mask])

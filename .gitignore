@@ -173,4 +173,7 @@ checkpoints/
 failed_configs.txt
 temp.txt
 backup/
+results/
+test*.py
+test*.sh
 zi42STIR

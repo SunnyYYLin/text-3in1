@@ -9,7 +9,8 @@ class Encoder(nn.Module):
         super(Encoder, self).__init__()
         self.only_one = config.only_one
         self.pos_encoder = PositionalEncoding(
-            d_model=config.emb_dim
+            d_model=config.emb_dim,
+            max_len=config.max_len,
         )
         encoder_layer = nn.TransformerEncoderLayer(
             d_model=config.emb_dim,
@@ -39,7 +40,7 @@ class Encoder(nn.Module):
         return output
     
 class PositionalEncoding(nn.Module):
-    def __init__(self, d_model, max_len=10000):
+    def __init__(self, d_model, max_len=256):
         super(PositionalEncoding, self).__init__()
         pe = torch.zeros(max_len, d_model)
         position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)

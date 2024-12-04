@@ -28,16 +28,14 @@ def test_sentiment_transformer():
     task_config = SentimentTaskConfig()
     model_configs_list = [
         # 最轻量模型配置
-        TransformerConfig(emb_dim=64, ffn_size=256, num_heads=2, num_layers=2, dropout=0.1),
-        TransformerConfig(emb_dim=64, ffn_size=256, num_heads=2, num_layers=3, dropout=0.2),
+        TransformerConfig(emb_dim=32, ffn_size=64, num_heads=2, num_layers=1, dropout=0.1),
+        TransformerConfig(emb_dim=32, ffn_size=128, num_heads=2, num_layers=1, dropout=0.2),
         
         # 增加一些特征表达能力
-        TransformerConfig(emb_dim=128, ffn_size=512, num_heads=2, num_layers=2, dropout=0.1),
-        TransformerConfig(emb_dim=128, ffn_size=512, num_heads=2, num_layers=3, dropout=0.2),
+        TransformerConfig(emb_dim=64, ffn_size=256, num_heads=2, num_layers=2, dropout=0.2),
         
         # 更复杂的配置，用于更强的特征抽取
-        TransformerConfig(emb_dim=256, ffn_size=768, num_heads=4, num_layers=2, dropout=0.2),
-        TransformerConfig(emb_dim=256, ffn_size=768, num_heads=4, num_layers=3, dropout=0.3),
+        TransformerConfig(emb_dim=64, ffn_size=256, num_heads=4, num_layers=2, dropout=0.2),
     ]
 
     # 将每组配置组合到 PipelineConfig 中
